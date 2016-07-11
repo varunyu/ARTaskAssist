@@ -285,8 +285,11 @@ public class EventController : MonoBehaviour {
 		float disx = Mathf.Abs(tmpcam2.x - tmpAnno2.x);
 		float disy = Mathf.Abs(tmpcam2.y - tmpAnno2.y);
 
-		float distance = Mathf.Sqrt ((disx*disx)+(disy*disy));
 
+		//////
+		float distance = Mathf.Sqrt ((disx*disx)+(disy*disy));
+		///////
+	
 		float m = disy / disx;
 		float c = tmpcam2.y - m * tmpAnno2.x;
 
@@ -298,8 +301,14 @@ public class EventController : MonoBehaviour {
 		Vector3 newPos = new Vector3 (lx,ly,pos.z);
 		Vector3 newPosToWorld = Camera.main.ScreenToWorldPoint (newPos);
 
+		//////
 		Vector3 currentPos = Camera.main.WorldToScreenPoint(selectedGameobject.transform.position);
+		//////
+
 		Ray ray2 = Camera.main.ScreenPointToRay (newPos);
+
+		Vector3 rayInitVec = tmpCamPos + tmpAnnoPos;
+		Vector3 ray2Vec = ray2.origin + ray2.direction;
 
 
 

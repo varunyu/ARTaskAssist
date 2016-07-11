@@ -19,11 +19,7 @@ public class AnnotationScript : MonoBehaviour {
 		Input.compass.enabled = true;
 
 
-		Input.gyro.enabled = true;
-//		//print (Input.gyro.enabled);
-//		VGra = new Vector3(0,0,0);
-//		v3current = this.gameObject.transform.eulerAngles;
-
+		//Input.gyro.enabled = true;
 		SetRotation ();
 	}
 
@@ -37,9 +33,9 @@ public class AnnotationScript : MonoBehaviour {
 
 
 		Vector3 rotaGrav = rotation * grav;
-		float toNorth = Camera.main.transform.eulerAngles.y-Input.compass.magneticHeading;
+		float toNorth = Input.compass.magneticHeading;
 	
-
+		//print (rotaGrav);
 
 		if (rotaGrav.y < -0 ) {
 			//print ("test");
@@ -49,22 +45,26 @@ public class AnnotationScript : MonoBehaviour {
 		} else {
 			gameObject.transform.rotation = Quaternion.LookRotation(rotaGrav,Vector3.up);
 		}
-
+		Vector3 cEuler = gameObject.transform.eulerAngles;
 		if (parallel) {
-			//gameObject.transform.rotation =  (new Vector3 (90, 0, 0));
-			gameObject.transform.rotation = Quaternion.Euler(90,0,toNorth);
+			gameObject.transform.Rotate (new Vector3 (90, 0, 0));
+			//gameObject.transform.Rotate(new Vector3(cEuler.x+90,cEuler.y,cEuler.z));
+			//gameObject.transform.rotation = Quaternion.Euler(cEuler.x+90,cEuler.y,cEuler.z+toNorth);
+		
 		} else {
-			gameObject.transform.rotation = Quaternion.Euler(0,-toNorth,0);
+			gameObject.transform.Rotate (new Vector3 (0, 0, 0));
+			//gameObject.transform.rotation = Quaternion.Euler(cEuler.x,cEuler.y-toNorth,cEuler.z);
+			//gameObject.transform.Rotate(new Vector3(cEuler.x,cEuler.y,cEuler.z));
 		}
 		//print (Camera.main.transform.eulerAngles.y+" : "+Input.compass.magneticHeading);
-
+		print (gameObject.transform.eulerAngles);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-		//SetRotation ();
+		SetRotation ();
 	}
 
 	public void SetState(bool state){
@@ -84,6 +84,9 @@ public class AnnotationScript : MonoBehaviour {
 	}
 	public void SetPos(Vector3 currentPos){
 		gameObject.transform.position = currentPos;
+	}
+	public void SetOrientation(){
+
 	}
 }
 
