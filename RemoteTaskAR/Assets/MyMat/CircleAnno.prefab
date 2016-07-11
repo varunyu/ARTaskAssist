@@ -13,7 +13,7 @@ GameObject:
   - 65: {fileID: 6534326}
   m_Layer: 0
   m_Name: CircleAnno
-  m_TagString: Untagged
+  m_TagString: annotation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 132442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineMat: {fileID: 2100000, guid: b236f0ceb2df843608d602c15fc97ae4, type: 2}
-  ThetaScale: .00999999978
+  ThetaScale: 0.01
   radius: 3
 --- !u!1001 &100100000
 Prefab:
@@ -120,6 +120,10 @@ Prefab:
       propertyPath: lineMat
       value: 
       objectReference: {fileID: 2100000, guid: b236f0ceb2df843608d602c15fc97ae4, type: 2}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: annotation
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 132442}

@@ -11,13 +11,27 @@ public class EventController : MonoBehaviour {
 	private AnnotationScript annoScrip;
 
 	public GameObject circlePrefab;
-	public string state;
 
-	public Button button90;
-	public Button button180;
-	public Button buttonCircle;
-	public Button buttonEdit;
-	public Button buttonRemove;
+	private string state;
+    private string annotype;
+    private bool annoOption;
+
+    public GameObject addAnnoPanel;
+    public GameObject editPanel;
+
+    public Button addButton;
+    public Button buttonEdit;
+    public Button buttonRemove;
+
+    public Button testModelButton;
+    public Button buttonCircle;
+	public Button annoOptionButton;
+	public Button addDone;
+
+    public Button rotateLeftButton;
+    public Button rotateRightButton;
+    public Button editDone;
+	
 
 	public Material lineMat;
 	private LineRenderer lr;
@@ -28,6 +42,7 @@ public class EventController : MonoBehaviour {
 	private Ray ray;
 	private Vector3 grav;
 
+    
 
 //	Vector3 tmpCamPos ;
 //	Vector3 tmpAnnoPos ;
@@ -39,6 +54,7 @@ public class EventController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		state = "NONE";
+        annoOption = false;
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
 
@@ -47,7 +63,7 @@ public class EventController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-#if UNITY_IOS		
+#if UNITY_IOS
 		foreach (Touch touch in Input.touches) {
 
 			if(!EventSystem.current.IsPointerOverGameObject (touch.fingerId)){
@@ -69,15 +85,28 @@ public class EventController : MonoBehaviour {
 							
 						}
 					}
+                    if (state.Equals("ADDANNO"))
+                    {
+                        if (annotype.Equals("DEBUG"))
+                        {
+                            CreateAnno(rayEnd, annoOption);
+                        }
+                        if (annotype.Equals("CIRCLE"))
+                        {
+                            CreateCircle(rayEnd, annoOption);
+                        }
+                    }
+
+                    /*
 					else if(state.Equals("90DEG")){
 						CreateAnno (rayEnd,false);
-//						RemoveSelectedAnno();
-//						CreateCircle(rayEnd,false);
+					RemoveSelectedAnno();
+					CreateCircle(rayEnd,false);
 					}
 					else if(state.Equals("180DEG")){
 						CreateAnno (rayEnd,true);
-//						RemoveSelectedAnno();
-//						CreateCircle(rayEnd,true);
+						RemoveSelectedAnno();
+						CreateCircle(rayEnd,true);
 					}
 					else if(state.Equals("CIRCLE")){
 
@@ -85,12 +114,8 @@ public class EventController : MonoBehaviour {
 						CreateCircle(rayEnd,false);
 
 					}
-//					if (state.Equals ("CREATE")) {
-//						ray = Camera.main.ScreenPointToRay (touch.position);
-//						Vector3 rayEnd = ray.GetPoint (4);
-//
-//						createAnno (rayEnd);
-//					}
+                    */
+				
 
 
 				}
@@ -113,7 +138,7 @@ public class EventController : MonoBehaviour {
 		}
 #endif
 #if UNITY_EDITOR
-		if(Input.GetMouseButtonDown(0)){
+        if (Input.GetMouseButtonDown(0)){
 			
 
 			if(!EventSystem.current.IsPointerOverGameObject ()){  
@@ -133,12 +158,24 @@ public class EventController : MonoBehaviour {
 						{
 							print (hit.transform.name);
 							selectedGameobject = hit.transform.gameObject;
-							//PrepareData();
+							
 							break;
 						}
 
 					}
 				}
+                if (state.Equals("ADDANNO"))
+                {
+                    if (annotype.Equals("DEBUG"))
+                    {
+                        CreateAnno(rayEnd, annoOption);
+                    }
+                    if (annotype.Equals("CIRCLE"))
+                    {
+                        CreateCircle(rayEnd, annoOption);
+                    }
+                }
+                /*
 				else if(state.Equals("90DEG")){
 
 					CreateAnno (rayEnd,false);
@@ -157,6 +194,7 @@ public class EventController : MonoBehaviour {
 					print ("Circle");
 				}
 
+                */
 			}
 
 		}
@@ -167,98 +205,74 @@ public class EventController : MonoBehaviour {
 					if (selectedGameobject != null) {
 						MoveSlidAR (Input.mousePosition);
 
-					}
-
-				
+					}				
 				}
 			}
 		}
-		if(Input.GetKey(KeyCode.DownArrow)){
-			if (selectedGameobject != null) {
-				MoveSlidAR(Input.mousePosition);
-				t=t-0.01f;
-			}
-
-		}
-
-		if(Input.GetKey(KeyCode.UpArrow)){
-
-			if (selectedGameobject != null) {
-				MoveSlidAR(Input.mousePosition);
-				t=t+0.01f;
-			}
-
-		}
+		
 #endif
 		if(state.Equals("EDIT")){
 
 			if (selectedGameobject != null) {
-
-
 				//PrepareData();
 				DrawSlidAR ();
 				//print ("edit on");
 			}
 		}
+	}
 
+    public void OpenAddPanel()
+    {
+        addAnnoPanel.SetActive(true);
+        state = "ADDANNO";
+    }    
+    public void OpenEditPanel()
+    {
+        editPanel.SetActive(true);
+        state = "EDIT";
+    }
+    public void DoneButton()
+    {
+        addAnnoPanel.SetActive(false);
+        editPanel.SetActive(false);
+        state = "NONE";
+    }
+    public void TestAnnoButton()
+    {
+        annotype = "DEBUG";
+    }
+    public void CircleAnnoButton()
+    {
+        annotype = "CIRCLE";
+    }
 
-	}    
+    public void ChangeAnnoOption()
+    {
+        if (annoOption)
+        {
+            annoOption = false;
+            
+        }
+        else
+        {
+            annoOption = true;
+        }
+    }
 
 	public void ChangeStateButton(string text){
 
-
+        
 		if (text.Equals ("EDIT")) {
 			
-			if (!state.Equals ("EDIT")) {
-				
-				state = "EDIT";
-				buttonEdit.image.color = Color.red;
-				button90.enabled = false;
-				button180.enabled = false;
-				buttonCircle.enabled = false;
-			} else {
-				state = "NONE";
-				buttonEdit.image.color = Color.white;
-				button90.enabled = true;
-				button180.enabled = true;
-				buttonCircle.enabled = true;
-			}
-		}
-		else if (text.Equals (state)) {
-			state = "NONE";
-			button90.image.color = Color.white;
-			button180.image.color = Color.white;
-			buttonCircle.image.color = Color.white;
 			
-		}else if (text.Equals ("90DEG")) {
-			state = "90DEG";
-			button90.image.color = Color.gray;
-			button180.image.color = Color.white;
-			buttonCircle.image.color = Color.white;
-
 		}
-		else if (text.Equals ("180DEG")) {
-			state = "180DEG";
-			button90.image.color = Color.white;
-			button180.image.color = Color.gray;
-			buttonCircle.image.color = Color.white;
-
-		}
-		else if (text.Equals ("CIRCLE")) {
-			state = "CIRCLE";
-			button90.image.color = Color.white;
-			button180.image.color = Color.white;
-			buttonCircle.image.color = Color.gray;
-
-		}
-		 else {
-			button90.image.color = Color.white;
-			button180.image.color = Color.white;
-			buttonCircle.image.color = Color.white;
-		}
+		
 		print (state);
 	}
+    public void Rotate(float input)
+    {
 
+    }
 	private void CreateCircle(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
 		newAnnotation.transform.parent = marker.transform;
