@@ -307,58 +307,68 @@ public class EventController : MonoBehaviour {
 
 		Ray ray2 = Camera.main.ScreenPointToRay (newPos);
 
-		Vector3 rayInitVec = tmpCamPos + tmpAnnoPos;
-		Vector3 ray2Vec = ray2.origin + ray2.direction;
+		Vector3 rayInit = tmpAnnoPos - tmpCamPos;
+		Vector3 ray2Vec =  ray2.direction - ray2.origin ;
 
+        float[][] input = new float[3][];
+        input[0] = new float[3] {-rayInit.x,ray2Vec.x, tmpCamPos.x - ray2.origin.x };
+        input[0] = new float[3] { -rayInit.y, ray2Vec.y, tmpCamPos.y - ray2.origin.y };
+        input[0] = new float[3] { -rayInit.z, ray2Vec.z, tmpCamPos.z - ray2.origin.z };
 
+        float[] result = guassianElim(input);
+        float d = result[0];
+        float t = result[1];
 
-		//print (Mathf.Abs(pos.x -currentPos.x));
+        print(tmpCamPos + " : " + d + " : " + rayInit);
+        print(tmpCamPos + (d*rayInit));
 
-//		if (disx >= disy) {
-//			if(Mathf.Abs(pos.x -currentPos.x)>5){
-//				if(left){
-//					if(pos.x>currentPos.x){
-//						t=t+0.025f;
-//					}
-//					else{
-//						t=t-0.025f;
-//					}
-//				}
-//				else{
-//					if(pos.x>currentPos.x){
-//						t=t-0.025f;
-//					}
-//					else{
-//						t=t+0.025f;
-//					}
-//				}
-//			}
-//
-//
-//		} else {
-//			if(Mathf.Abs(pos.y -currentPos.y)>5){
-//				if(up){
-//					if(pos.y>currentPos.y){
-//						t=t+0.025f;
-//					}
-//					else{
-//						t=t-0.025f;
-//					}
-//				}
-//				else{
-//					if(pos.y>currentPos.y){
-//						t=t-0.025f;
-//					}
-//					else{
-//						t=t+0.025f;
-//					}
-//				}
-//			}
-//
-//
-//		}
-//
-		Vector3 direcV = tmpCamPos - tmpAnnoPos;
+        //print (Mathf.Abs(pos.x -currentPos.x));
+
+        //		if (disx >= disy) {
+        //			if(Mathf.Abs(pos.x -currentPos.x)>5){
+        //				if(left){
+        //					if(pos.x>currentPos.x){
+        //						t=t+0.025f;
+        //					}
+        //					else{
+        //						t=t-0.025f;
+        //					}
+        //				}
+        //				else{
+        //					if(pos.x>currentPos.x){
+        //						t=t-0.025f;
+        //					}
+        //					else{
+        //						t=t+0.025f;
+        //					}
+        //				}
+        //			}
+        //
+        //
+        //		} else {
+        //			if(Mathf.Abs(pos.y -currentPos.y)>5){
+        //				if(up){
+        //					if(pos.y>currentPos.y){
+        //						t=t+0.025f;
+        //					}
+        //					else{
+        //						t=t-0.025f;
+        //					}
+        //				}
+        //				else{
+        //					if(pos.y>currentPos.y){
+        //						t=t-0.025f;
+        //					}
+        //					else{
+        //						t=t+0.025f;
+        //					}
+        //				}
+        //			}
+        //
+        //
+        //		}
+        //
+        Vector3 direcV = tmpCamPos - tmpAnnoPos;
 		float x;
 		float y;
 		float z;
@@ -453,7 +463,94 @@ public class EventController : MonoBehaviour {
 //			TmpCircleGameobject = null;
 //		}
 	}
+    public float[] guassianElim(float[][] rows)
+    {
+        int length = rows[0].Length;
 
+        for (int i = 0; i < rows.Length - 1; i++)
+        {
+            if (rows[i][i] == 0 && !Swap(rows, i, i))
+            {
+                return null;
+            }
+
+            for (int j = i; j < rows.Length; j++)
+            {
+                float[] d = new float[length];
+                for (int x = 0; x < length; x++)
+                {
+                    d[x] = rows[j][x];
+                    if (rows[j][i] != 0)
+                    {
+                        d[x] = d[x] / rows[j][i];
+                    }
+                }
+                rows[j] = d;
+            }
+
+            for (int y = i + 1; y < rows.Length; y++)
+            {
+                float[] f = new float[length];
+                for (int g = 0; g < length; g++)
+                {
+                    f[g] = rows[y][g];
+                    if (rows[y][i] != 0)
+                    {
+                        f[g] = f[g] - rows[i][g];
+                    }
+
+                }
+                rows[y] = f;
+            }
+        }
+
+        return CalculateResult(rows);
+    }
+
+    private bool Swap(float[][] rows, int row, int column)
+    {
+        bool swapped = false;
+        for (int z = rows.Length - 1; z > row; z--)
+        {
+            if (rows[z][row] != 0)
+            {
+                float[] temp = new float[rows[0].Length];
+                temp = rows[z];
+                rows[z] = rows[column];
+                rows[column] = temp;
+                swapped = true;
+            }
+        }
+
+        return swapped;
+    }
+
+    private float[] CalculateResult(float[][] rows)
+    {
+        float val = 0;
+        int length = rows[0].Length;
+        float[] result = new float[rows.Length];
+        for (int i = rows.Length - 1; i >= 0; i--)
+        {
+            val = rows[i][length - 1];
+            for (int x = length - 2; x > i - 1; x--)
+            {
+                val -= rows[i][x] * result[x];
+            }
+            result[i] = val / rows[i][i];
+
+            if (!IsValidResult(result[i]))
+            {
+                return null;
+            }
+        }
+        return result;
+    }
+
+    private bool IsValidResult(double result)
+    {
+        return result.ToString() != "NaN" || !result.ToString().Contains("Infinity");
+    }
 
 }
 
