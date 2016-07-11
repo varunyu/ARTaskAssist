@@ -295,117 +295,45 @@ public class EventController : MonoBehaviour {
 
 		float lx = pos.x + (m*pos.x-pos.y+c)/(m*m+1)*m;
 		float ly = pos.y + (m*pos.x-pos.y+c)/(m*m+1); 
-		print (pos);
-		print (lx+" : "+ly);
+		//print (pos);
+		//print (lx+" : "+ly);
 
-		Vector3 newPos = new Vector3 (lx,ly,pos.z);
+		Vector3 newPos = new Vector3 (lx,ly,pos.z+1);
 		Vector3 newPosToWorld = Camera.main.ScreenToWorldPoint (newPos);
 
-		//////
-		Vector3 currentPos = Camera.main.WorldToScreenPoint(selectedGameobject.transform.position);
-		//////
 
+
+		Vector3 cCamPos = Camera.main.transform.position;
 		Ray ray2 = Camera.main.ScreenPointToRay (newPos);
 
 		Vector3 rayInit = tmpAnnoPos - tmpCamPos;
-		Vector3 ray2Vec =  ray2.direction - ray2.origin ;
+		Vector3 ray2Vec =  newPosToWorld - cCamPos ;
 
-        float[][] input = new float[3][];
-        input[0] = new float[3] {-rayInit.x,ray2Vec.x, tmpCamPos.x - ray2.origin.x };
-        input[0] = new float[3] { -rayInit.y, ray2Vec.y, tmpCamPos.y - ray2.origin.y };
-        input[0] = new float[3] { -rayInit.z, ray2Vec.z, tmpCamPos.z - ray2.origin.z };
+		print (newPosToWorld);
+		print (Camera.main.transform.position);
+
+		print (tmpAnnoPos);
+		print (tmpCamPos);
+
+
+		float[][] input = new float[3][];
+		input[0] = new float[3] {-rayInit.x,ray2Vec.x, tmpCamPos.x - cCamPos.x };
+		input[1] = new float[3] { -rayInit.y, ray2Vec.y, tmpCamPos.y - cCamPos.y };
+		input[2] = new float[3] { -rayInit.z, ray2Vec.z, tmpCamPos.z - cCamPos.z };
+
+//		print (input[0][0]+":"+input[0][1]+":"+input[0][2]);
+//		print (input[1][0]+":"+input[1][1]+":"+input[1][2]);
+//		print (input[2][0]+":"+input[2][1]+":"+input[2][2]);
 
         float[] result = guassianElim(input);
         float d = result[0];
         float t = result[1];
 
-        print(tmpCamPos + " : " + d + " : " + rayInit);
-        print(tmpCamPos + (d*rayInit));
+//        print(tmpCamPos + " : " + d + " : " + rayInit);
+//        print(tmpCamPos + (d*rayInit));
+		selectedGameobject.transform.position = tmpCamPos + (d * rayInit);
 
-        //print (Mathf.Abs(pos.x -currentPos.x));
-
-        //		if (disx >= disy) {
-        //			if(Mathf.Abs(pos.x -currentPos.x)>5){
-        //				if(left){
-        //					if(pos.x>currentPos.x){
-        //						t=t+0.025f;
-        //					}
-        //					else{
-        //						t=t-0.025f;
-        //					}
-        //				}
-        //				else{
-        //					if(pos.x>currentPos.x){
-        //						t=t-0.025f;
-        //					}
-        //					else{
-        //						t=t+0.025f;
-        //					}
-        //				}
-        //			}
-        //
-        //
-        //		} else {
-        //			if(Mathf.Abs(pos.y -currentPos.y)>5){
-        //				if(up){
-        //					if(pos.y>currentPos.y){
-        //						t=t+0.025f;
-        //					}
-        //					else{
-        //						t=t-0.025f;
-        //					}
-        //				}
-        //				else{
-        //					if(pos.y>currentPos.y){
-        //						t=t-0.025f;
-        //					}
-        //					else{
-        //						t=t+0.025f;
-        //					}
-        //				}
-        //			}
-        //
-        //
-        //		}
-        //
-        Vector3 direcV = tmpCamPos - tmpAnnoPos;
-		float x;
-		float y;
-		float z;
-
-
-
-		Vector3 posToWorld = Camera.main.ScreenToWorldPoint (pos);
-
-
-
-		x = tmpAnnoPos.x + (direcV.x*t);
-		y = tmpAnnoPos.y + (direcV.y*t);
-		z = tmpAnnoPos.z + (direcV.z*t);
-
-		selectedGameobject.transform.position = new Vector3 (x,y,z);
-
-
-		//		if(Mathf.Abs(posToWorld.x-tmpAnnoPos.x)>Mathf.Abs(posToWorld.y-tmpAnnoPos.y) && Mathf.Abs(posToWorld.x-tmpAnnoPos.x)>Mathf.Abs(posToWorld.y-tmpAnnoPos.y)){
-		//
-		//			t = (posToWorld.x - tmpAnnoPos.x) / direcV.x;
-		//			y = tmpAnnoPos.y + (direcV.y*t);
-		//			x = posToWorld.x;
-		//			z = tmpAnnoPos.z + (direcV.z*t);
-		//
-		//		}
-		//		else if(Mathf.Abs(posToWorld.y-tmpAnnoPos.y)>Mathf.Abs(posToWorld.z-tmpAnnoPos.z)){
-		//			t = (posToWorld.y - tmpAnnoPos.y) / direcV.y;
-		//			y = posToWorld.y;
-		//			x = tmpAnnoPos.x + (direcV.x*t);
-		//			z = tmpAnnoPos.z + (direcV.z*t);
-		//		}
-		//		else{
-		//			t = (posToWorld.z - tmpAnnoPos.z) / direcV.z;
-		//			y = tmpAnnoPos.y + (direcV.y*t);
-		//			x = tmpAnnoPos.x + (direcV.x*t);
-		//			z = posToWorld.z;
-		//		}
+        
 	}
 
 
@@ -437,9 +365,7 @@ public class EventController : MonoBehaviour {
 		lr.SetPosition (0, Camera.main.ScreenToWorldPoint(tmpcam2));
 		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno2));
 //		lr.SetPosition (0, Camera.main.ScreenToWorldPoint(tmpcam3));
-//		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno3));
-
-			
+//		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno3));			
 	}
 //	private void PrepareData(){
 //		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));

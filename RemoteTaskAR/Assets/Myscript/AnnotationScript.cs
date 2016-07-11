@@ -47,24 +47,26 @@ public class AnnotationScript : MonoBehaviour {
 		}
 		Vector3 cEuler = gameObject.transform.eulerAngles;
 		if (parallel) {
-			gameObject.transform.Rotate (new Vector3 (90, 0, 0));
+			gameObject.transform.Rotate (new Vector3 (camAngle.x+90, camAngle.y, camAngle.z),Space.Self);
 			//gameObject.transform.Rotate(new Vector3(cEuler.x+90,cEuler.y,cEuler.z));
 			//gameObject.transform.rotation = Quaternion.Euler(cEuler.x+90,cEuler.y,cEuler.z+toNorth);
 		
 		} else {
-			gameObject.transform.Rotate (new Vector3 (0, 0, 0));
+			gameObject.transform.Rotate (new Vector3 (camAngle.x, camAngle.y, camAngle.z),Space.Self);
+
+
 			//gameObject.transform.rotation = Quaternion.Euler(cEuler.x,cEuler.y-toNorth,cEuler.z);
 			//gameObject.transform.Rotate(new Vector3(cEuler.x,cEuler.y,cEuler.z));
 		}
 		//print (Camera.main.transform.eulerAngles.y+" : "+Input.compass.magneticHeading);
-		print (gameObject.transform.eulerAngles);
+		//print (gameObject.transform.eulerAngles);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-		SetRotation ();
+		//SetRotation ();
 	}
 
 	public void SetState(bool state){
