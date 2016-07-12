@@ -26,6 +26,7 @@ public class EventController : MonoBehaviour {
     public Button testModelButton;
     public Button buttonCircle;
 	public Button annoOptionButton;
+	public Text modeText;
 	public Button addDone;
 
     public Button rotateLeftButton;
@@ -211,14 +212,14 @@ public class EventController : MonoBehaviour {
 		}
 		
 #endif
-		if(state.Equals("EDIT")){
+		if (state.Equals ("EDIT")) {
 
 			if (selectedGameobject != null) {
 				//PrepareData();
 				DrawSlidAR ();
 				//print ("edit on");
 			}
-		}
+		} 
 	}
 
     public void OpenAddPanel()
@@ -235,6 +236,7 @@ public class EventController : MonoBehaviour {
     {
         addAnnoPanel.SetActive(false);
         editPanel.SetActive(false);
+		destroyLine ();
         state = "NONE";
     }
     public void TestAnnoButton()
@@ -251,11 +253,12 @@ public class EventController : MonoBehaviour {
         if (annoOption)
         {
             annoOption = false;
-            
+			modeText.text = "Vertical";
         }
         else
         {
             annoOption = true;
+			modeText.text = "Parallel";
         }
     }
 
@@ -271,7 +274,9 @@ public class EventController : MonoBehaviour {
 	}
     public void Rotate(float input)
     {
-
+		if (selectedGameobject != null) {
+			annoScrip.SetOrientation(input);
+		}
     }
 	private void CreateCircle(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
@@ -292,48 +297,57 @@ public class EventController : MonoBehaviour {
 
 	private void MoveSlidAR(Vector3 pos){
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
-		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
-		Vector3 tmpAnnoPos = annoScrip.GetAnnoPos ();
+		Vector3 camPos = annoScrip.GetInitCamPos ();
+		Vector3 objPos = annoScrip.GetAnnoPos ();
+
+		Vector3 intCamToSc = Camera.main.WorldToScreenPoint (camPos);
+		Vector3 objToSc = Camera.main.WorldToScreenPoint (objPos);
 
 
-		float disx = Mathf.Abs(tmpcam2.x - tmpAnno2.x);
-		float disy = Mathf.Abs(tmpcam2.y - tmpAnno2.y);
+//		float disx = Mathf.Abs(tmpcam2.x - tmpAnno2.x);
+//		float disy = Mathf.Abs(tmpcam2.y - tmpAnno2.y);
+//
+//	
+//		float m = disy / disx;
+//		float c = tmpcam2.y - m * tmpAnno2.x;
 
-
-		//////
-		float distance = Mathf.Sqrt ((disx*disx)+(disy*disy));
-		///////
-	
-		float m = disy / disx;
-		float c = tmpcam2.y - m * tmpAnno2.x;
+		float m = (intCamToSc.y-objToSc.y)/(intCamToSc.x-objToSc.x);
+		float c = intCamToSc.y - (m*intCamToSc.x);
 
 		float lx = pos.x + (m*pos.x-pos.y+c)/(m*m+1)*m;
 		float ly = pos.y + (m*pos.x-pos.y+c)/(m*m+1); 
 		//print (pos);
 		//print (lx+" : "+ly);
 
-		Vector3 newPos = new Vector3 (lx,ly,pos.z+1);
-		Vector3 newPosToWorld = Camera.main.ScreenToWorldPoint (newPos);
+		Vector3 touchPos = new Vector3 (lx,ly,pos.z+1f);
+
+		//Vector3 newPos = new Vector3 (pos.x,(m*pos.x)+c ,1);
+		touchPos = Camera.main.ScreenToWorldPoint (touchPos);
 
 
 
 		Vector3 cCamPos = Camera.main.transform.position;
-		Ray ray2 = Camera.main.ScreenPointToRay (newPos);
+		Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
 
-		Vector3 rayInit = tmpAnnoPos - tmpCamPos;
-		Vector3 ray2Vec =  newPosToWorld - cCamPos ;
+		Vector3 V1 = objPos - camPos;
+		Vector3 V2 =  touchPos - cCamPos ;
 
-		print (newPosToWorld);
-		print (Camera.main.transform.position);
+		//print (newPosToWorld);
+		//print (Camera.main.transform.position);
 
-		print (tmpAnnoPos);
-		print (tmpCamPos);
+		//print (tmpAnnoPos);
+		//print (tmpCamPos);
+
+		print ("touch : "+Camera.main.ScreenToWorldPoint(touchPos));
+		print ("Camera Pos : "+Camera.main.transform.position);
+		print ("InitCamPos : "+camPos);
+		print ("ObjPos : "+objPos);
 
 
 		float[][] input = new float[3][];
-		input[0] = new float[3] {-rayInit.x,ray2Vec.x, tmpCamPos.x - cCamPos.x };
-		input[1] = new float[3] { -rayInit.y, ray2Vec.y, tmpCamPos.y - cCamPos.y };
-		input[2] = new float[3] { -rayInit.z, ray2Vec.z, tmpCamPos.z - cCamPos.z };
+		input[0] = new float[3] { -V1.x, V2.x, camPos.x - cCamPos.x };
+		input[1] = new float[3] { -V1.y, V2.y, camPos.y - cCamPos.y };
+		input[2] = new float[3] { -V1.z, V2.z, camPos.z - cCamPos.z };
 
 //		print (input[0][0]+":"+input[0][1]+":"+input[0][2]);
 //		print (input[1][0]+":"+input[1][1]+":"+input[1][2]);
@@ -343,14 +357,19 @@ public class EventController : MonoBehaviour {
         float d = result[0];
         float t = result[1];
 
-//        print(tmpCamPos + " : " + d + " : " + rayInit);
-//        print(tmpCamPos + (d*rayInit));
-		selectedGameobject.transform.position = tmpCamPos + (d * rayInit);
+		//print (d+":"+t);
+        //print(tmpCamPos + " : " + d + " : " + rayInit);
+        //print(tmpCamPos + (d*rayInit));
+		selectedGameobject.transform.position = camPos + (d * V1);
 
         
 	}
 
-
+	private void destroyLine(){
+		if (lr.enabled) {
+			lr.enabled = false;
+		}
+	}
 	private void DrawSlidAR(){
 		lr.enabled = true;
 

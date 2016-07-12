@@ -47,12 +47,13 @@ public class AnnotationScript : MonoBehaviour {
 		}
 		Vector3 cEuler = gameObject.transform.eulerAngles;
 		if (parallel) {
-			gameObject.transform.Rotate (new Vector3 (camAngle.x+90, camAngle.y, camAngle.z),Space.Self);
+			gameObject.transform.Rotate (new Vector3 (90, 0, 0));
+
 			//gameObject.transform.Rotate(new Vector3(cEuler.x+90,cEuler.y,cEuler.z));
 			//gameObject.transform.rotation = Quaternion.Euler(cEuler.x+90,cEuler.y,cEuler.z+toNorth);
 		
 		} else {
-			gameObject.transform.Rotate (new Vector3 (camAngle.x, camAngle.y, camAngle.z),Space.Self);
+			gameObject.transform.Rotate (new Vector3 (0, 0, 0));
 
 
 			//gameObject.transform.rotation = Quaternion.Euler(cEuler.x,cEuler.y-toNorth,cEuler.z);
@@ -65,7 +66,7 @@ public class AnnotationScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
 		//SetRotation ();
 	}
 
@@ -87,8 +88,12 @@ public class AnnotationScript : MonoBehaviour {
 	public void SetPos(Vector3 currentPos){
 		gameObject.transform.position = currentPos;
 	}
-	public void SetOrientation(){
-
+	public void SetOrientation(float deg){
+		if (parallel) {
+			gameObject.transform.Rotate (Vector3.up, deg, Space.Self);
+		} else {
+			gameObject.transform.Rotate (Vector3.forward, deg, Space.Self);
+		}
 	}
 }
 
