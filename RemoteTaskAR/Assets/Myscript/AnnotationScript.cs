@@ -33,11 +33,12 @@ public class AnnotationScript : MonoBehaviour {
 
 
 		Vector3 rotaGrav = rotation * grav;
+
 		float toNorth = Input.compass.magneticHeading;
 	
 		//print (rotaGrav);
 
-		if (rotaGrav.y < -0 ) {
+		if (rotaGrav.y < 0 ) {
 			//print ("test");
 			gameObject.transform.rotation = Quaternion.LookRotation (rotaGrav, Vector3.back);
 

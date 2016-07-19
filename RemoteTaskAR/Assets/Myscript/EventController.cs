@@ -43,23 +43,22 @@ public class EventController : MonoBehaviour {
 	private Ray ray;
 	private Vector3 grav;
 
-    
+	private float screenHeight;
+	private float screenWidth;
 
-//	Vector3 tmpCamPos ;
-//	Vector3 tmpAnnoPos ;
 	Vector3 tmpcam2 ;
 	Vector3 tmpAnno2 ;
 
-	float t ;
-
 	// Use this for initialization
 	void Start () {
+		screenHeight = Screen.height;
+		screenWidth = Screen.width;
 		state = "NONE";
         annoOption = false;
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
 
-		t = 0;
+
 	}
 	
 	// Update is called once per frame
@@ -96,27 +95,7 @@ public class EventController : MonoBehaviour {
                         {
                             CreateCircle(rayEnd, annoOption);
                         }
-                    }
-
-                    /*
-					else if(state.Equals("90DEG")){
-						CreateAnno (rayEnd,false);
-					RemoveSelectedAnno();
-					CreateCircle(rayEnd,false);
-					}
-					else if(state.Equals("180DEG")){
-						CreateAnno (rayEnd,true);
-						RemoveSelectedAnno();
-						CreateCircle(rayEnd,true);
-					}
-					else if(state.Equals("CIRCLE")){
-
-						RemoveSelectedAnno();
-						CreateCircle(rayEnd,false);
-
-					}
-                    */
-				
+                    }                   
 
 
 				}
@@ -147,10 +126,6 @@ public class EventController : MonoBehaviour {
 				ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				Vector3 rayEnd = ray.GetPoint (4);
 
-				//RaycastHit hit;
-
-
-
 				if(state.Equals("NONE")){
 
 					foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) {
@@ -176,26 +151,7 @@ public class EventController : MonoBehaviour {
                         CreateCircle(rayEnd, annoOption);
                     }
                 }
-                /*
-				else if(state.Equals("90DEG")){
-
-					CreateAnno (rayEnd,false);
-					print ("create anno 90 deg");
-
-				}
-				else if(state.Equals("180DEG")){
-
-					CreateAnno (rayEnd,true);
-					print ("create anno 180 deg");
-
-				}
-				else if(state.Equals("CIRCLE")){
-					CreateCircle(rayEnd,true);
-
-					print ("Circle");
-				}
-
-                */
+                
 			}
 
 		}
@@ -215,9 +171,9 @@ public class EventController : MonoBehaviour {
 		if (state.Equals ("EDIT")) {
 
 			if (selectedGameobject != null) {
-				//PrepareData();
+
 				DrawSlidAR ();
-				//print ("edit on");
+
 			}
 		} 
 	}
@@ -304,12 +260,7 @@ public class EventController : MonoBehaviour {
 		Vector3 objToSc = Camera.main.WorldToScreenPoint (objPos);
 
 
-//		float disx = Mathf.Abs(tmpcam2.x - tmpAnno2.x);
-//		float disy = Mathf.Abs(tmpcam2.y - tmpAnno2.y);
-//
-//	
-//		float m = disy / disx;
-//		float c = tmpcam2.y - m * tmpAnno2.x;
+
 
 		float m = (intCamToSc.y-objToSc.y)/(intCamToSc.x-objToSc.x);
 		float c = intCamToSc.y - (m*intCamToSc.x);
@@ -338,10 +289,10 @@ public class EventController : MonoBehaviour {
 		//print (tmpAnnoPos);
 		//print (tmpCamPos);
 
-		print ("touch : "+Camera.main.ScreenToWorldPoint(touchPos));
-		print ("Camera Pos : "+Camera.main.transform.position);
-		print ("InitCamPos : "+camPos);
-		print ("ObjPos : "+objPos);
+//		print ("touch : "+Camera.main.ScreenToWorldPoint(touchPos));
+//		print ("Camera Pos : "+Camera.main.transform.position);
+//		print ("InitCamPos : "+camPos);
+//		print ("ObjPos : "+objPos);
 
 
 		float[][] input = new float[3][];
@@ -373,6 +324,10 @@ public class EventController : MonoBehaviour {
 	private void DrawSlidAR(){
 		lr.enabled = true;
 
+		int count = 2;
+		bool isCamOnS = true;
+		bool isAnnoOnS = true;
+
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
 		Vector3 tmpAnnoPos = annoScrip.GetAnnoPos ();
@@ -380,34 +335,54 @@ public class EventController : MonoBehaviour {
 		lr.material = lineMat;
 		lr.SetColors (Color.red,Color.red);
 		lr.SetWidth (0.005f,0.005f);
-		lr.SetVertexCount (2);	
+
 
 
 
 		tmpcam2 = Camera.main.WorldToScreenPoint (tmpCamPos);
 		tmpAnno2 = Camera.main.WorldToScreenPoint (tmpAnnoPos);
 
-		//print (tmpcam2);
+		Vector2 camOnSc = new Vector2 (tmpcam2.x,tmpcam2.y);
+		Vector2 annoOnSc = new Vector2 (tmpAnno2.x,tmpAnno2.y);
+		Vector2 dirVec = annoOnSc - camOnSc;
+
+		if (camOnSc.x > 0 && camOnSc.x < screenWidth && camOnSc.y > 0 && camOnSc.y < screenHeight) {
+			count++;
+			isCamOnS = false;
+		}
+		if (annoOnSc.x > 0 && annoOnSc.x < screenWidth && annoOnSc.y > 0 && annoOnSc.y < screenHeight) {
+			count++;
+			isAnnoOnS = false;
+		}
+
+		print ("L : "+screenWidth+"  H : "+screenHeight);
+		print (annoOnSc.x+ " : "+annoOnSc.y);
+
+		lr.SetVertexCount (count);	
+
 
 		Vector3 tmpcam3 = new Vector3 (tmpcam2.x,tmpcam2.y,1);
 		Vector3 tmpAnno3 = new Vector3 (tmpAnno2.x,tmpAnno2.y,1);
 
-		//print (Camera.main.ScreenToWorldPoint(tmpcam2));
-		//print (Camera.main.ScreenToWorldPoint(tmpAnno3));
+		if (!isCamOnS) {
 
-		lr.SetPosition (0, Camera.main.ScreenToWorldPoint(tmpcam2));
-		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno2));
-//		lr.SetPosition (0, Camera.main.ScreenToWorldPoint(tmpcam3));
-//		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno3));			
+			Vector2 fp = camOnSc - dirVec;
+
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint (new Vector3 (fp.x, fp.y, 1)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint (tmpcam3));
+			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(tmpAnno3));			
+		} else {
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint (tmpcam3));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint (tmpAnno3));
+		}
+		if(!isAnnoOnS){
+			Vector2 lp = camOnSc + (2*dirVec);
+			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint (new Vector3 (lp.x, lp.y, 1)));
+		}
+
+
 	}
-//	private void PrepareData(){
-//		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
-//		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
-//		Vector3 tmpAnnoPos = annoScrip.GetAnnoPos ();
-//		Vector3 tmpcam2 = Camera.main.WorldToScreenPoint (tmpCamPos);
-//		Vector3 tmpAnno2 = Camera.main.WorldToScreenPoint (tmpAnnoPos);
-//
-//	}
+
 
 
 	public void RemoveSelectedAnno(){
