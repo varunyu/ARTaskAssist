@@ -9,6 +9,7 @@ public class EventController : MonoBehaviour {
 	public GameObject marker;
 	public GameObject annoPrefab;
 	private AnnotationScript annoScrip;
+    private UIController UIs;
 
 	public GameObject circlePrefab;
 
@@ -18,21 +19,26 @@ public class EventController : MonoBehaviour {
 
     public GameObject addAnnoPanel;
     public GameObject editPanel;
-
+    /*
     public Button addButton;
     public Button buttonEdit;
     public Button buttonRemove;
-
+    
     public Button testModelButton;
     public Button buttonCircle;
 	public Button annoOptionButton;
+    */
 	public Text modeText;
-	public Button addDone;
+	//public Button addDone;
 
+
+    private bool slidARMode;
+    private bool rotateMode;
+    /*
     public Button rotateLeftButton;
     public Button rotateRightButton;
     public Button editDone;
-	
+	*/
 
 	public Material lineMat;
 	private LineRenderer lr;
@@ -45,8 +51,6 @@ public class EventController : MonoBehaviour {
 
     
 
-//	Vector3 tmpCamPos ;
-//	Vector3 tmpAnnoPos ;
 	Vector3 tmpcam2 ;
 	Vector3 tmpAnno2 ;
 
@@ -54,6 +58,11 @@ public class EventController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+        UIs = (UIController)gameObject.GetComponent(typeof(UIController));
+
+        slidARMode = false;
+        rotateMode = false;
 		state = "NONE";
         annoOption = false;
 		lr = gameObject.AddComponent<LineRenderer>();
@@ -215,28 +224,49 @@ public class EventController : MonoBehaviour {
 		if (state.Equals ("EDIT")) {
 
 			if (selectedGameobject != null) {
-				//PrepareData();
-				DrawSlidAR ();
+                //PrepareData();
+                if (slidARMode)
+                {
+                    DrawSlidAR();
+                }
+				
 				//print ("edit on");
 			}
 		} 
 	}
-
+    public void SlidARActive()
+    {
+        UIs.OnSlidARTouch();
+        slidARMode = true;
+        rotateMode = false;
+    }
+    public void RotateActive()
+    {
+        UIs.OnRotateTouch();
+        slidARMode = false;
+        rotateMode = true;
+    }
     public void OpenAddPanel()
     {
+        UIs.AddAnnoActive();
         addAnnoPanel.SetActive(true);
         state = "ADDANNO";
     }    
     public void OpenEditPanel()
     {
+        UIs.EditButtonActive();
         editPanel.SetActive(true);
         state = "EDIT";
     }
     public void DoneButton()
     {
-        addAnnoPanel.SetActive(false);
-        editPanel.SetActive(false);
-		destroyLine ();
+        UIs.OnEditDone();
+        UIs.OnAddAnnoDone();
+        //addAnnoPanel.SetActive(false);
+        //editPanel.SetActive(false);
+        slidARMode = false;
+        rotateMode = false;
+        destroyLine ();
         state = "NONE";
     }
     public void TestAnnoButton()
