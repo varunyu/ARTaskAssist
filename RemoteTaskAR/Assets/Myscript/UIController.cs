@@ -65,6 +65,8 @@ public class UIController : MonoBehaviour {
     {
         ClearColor(rotateButton);
         ClearColor(slidARButton);
+		ClearColor (buttonEdit);
+		ClearColor (addButton);
         editPanel.SetActive(false);
     }
     public void OnAddAnnoDone()

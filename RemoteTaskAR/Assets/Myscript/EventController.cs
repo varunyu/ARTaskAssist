@@ -49,7 +49,7 @@ public class EventController : MonoBehaviour {
 	private Ray ray;
 	private Vector3 grav;
 
-    
+	private float rotaSpeed = 10.0f;
 
 	Vector3 tmpcam2 ;
 	Vector3 tmpAnno2 ;
@@ -74,16 +74,21 @@ public class EventController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 #if UNITY_IOS
-		foreach (Touch touch in Input.touches) {
+		if (Input.touches.Length >0) {
+			Touch touch = Input.GetTouch(0);
 
-			if(!EventSystem.current.IsPointerOverGameObject (touch.fingerId)){
-				if(touch.phase == TouchPhase.Began) {
+			if(!EventSystem.current.IsPointerOverGameObject (touch.fingerId))
+			{
+				if(touch.phase == TouchPhase.Began) 
+				{
 
 					ray = Camera.main.ScreenPointToRay (touch.position);
 					Vector3 rayEnd = ray.GetPoint (4);
 
-					if(state.Equals("NONE")){
-						foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) {
+					if(state.Equals("NONE"))
+					{
+						foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) 
+						{
 							
 							if(hit.collider.tag.Equals ("annotation"))
 							{
@@ -107,39 +112,44 @@ public class EventController : MonoBehaviour {
                         }
                     }
 
-                    /*
-					else if(state.Equals("90DEG")){
-						CreateAnno (rayEnd,false);
-					RemoveSelectedAnno();
-					CreateCircle(rayEnd,false);
-					}
-					else if(state.Equals("180DEG")){
-						CreateAnno (rayEnd,true);
-						RemoveSelectedAnno();
-						CreateCircle(rayEnd,true);
-					}
-					else if(state.Equals("CIRCLE")){
-
-						RemoveSelectedAnno();
-						CreateCircle(rayEnd,false);
-
-					}
-                    */
-				
-
+                    
+				}
+				else if(touch.phase == TouchPhase.Ended)
+				{
 
 				}
-				else if(touch.phase == TouchPhase.Ended){
+				else if(touch.phase == TouchPhase.Moved)
+				{
+					if (state.Equals ("EDIT")) 
+					{
 
-				}
-				else if(touch.phase == TouchPhase.Moved){
-					if (state.Equals ("EDIT")) {
-						if (selectedGameobject != null) {
-							MoveSlidAR (touch.position);
+						if (selectedGameobject != null) 
+						{
+							if(slidARMode)
+							{
+								MoveSlidAR (touch.position);
+							}
+							if(rotateMode)
+							{
+								if(Input.touchCount == 1)
+								{
+									if(touch.deltaPosition.x > touch.deltaPosition.y)
+									{
+										RotateYAxis(touch.deltaPosition.x*rotaSpeed*Time.deltaTime);
+									}
+									else
+									{
+										RotateXAxis(touch.deltaPosition.y*rotaSpeed*Time.deltaTime);
+									}
+								}
+								else if(Input.touchCount >=2)
+								{
+									
+								}
+							}
 							
-						}
-						
-						
+						}	
+
 					}
 				}
 			}
@@ -185,26 +195,7 @@ public class EventController : MonoBehaviour {
                         CreateCircle(rayEnd, annoOption);
                     }
                 }
-                /*
-				else if(state.Equals("90DEG")){
-
-					CreateAnno (rayEnd,false);
-					print ("create anno 90 deg");
-
-				}
-				else if(state.Equals("180DEG")){
-
-					CreateAnno (rayEnd,true);
-					print ("create anno 180 deg");
-
-				}
-				else if(state.Equals("CIRCLE")){
-					CreateCircle(rayEnd,true);
-
-					print ("Circle");
-				}
-
-                */
+                
 			}
 
 		}
@@ -292,22 +283,21 @@ public class EventController : MonoBehaviour {
         }
     }
 
-	public void ChangeStateButton(string text){
 
-        
-		if (text.Equals ("EDIT")) {
-			
-			
-		}
-		
-		print (state);
-	}
-    public void Rotate(float input)
+
+
+    public void RotateYAxis(float input)
     {
 		if (selectedGameobject != null) {
 			annoScrip.SetOrientation(input);
 		}
     }
+	public void RotateXAxis(float input)
+	{
+		if (selectedGameobject != null) {
+
+		}
+	}
 	private void CreateCircle(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
 		newAnnotation.transform.parent = marker.transform;
