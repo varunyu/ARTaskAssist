@@ -19,27 +19,12 @@ public class EventController : MonoBehaviour {
 
     public GameObject addAnnoPanel;
     public GameObject editPanel;
-    /*
-    public Button addButton;
-    public Button buttonEdit;
-    public Button buttonRemove;
-    
-    public Button testModelButton;
-    public Button buttonCircle;
-	public Button annoOptionButton;
-    */
+   
 	public Text modeText;
-	//public Button addDone;
-
 
     private bool slidARMode;
     private bool rotateMode;
-    /*
-    public Button rotateLeftButton;
-    public Button rotateRightButton;
-    public Button editDone;
-	*/
-
+    
 	public Material lineMat;
 	private LineRenderer lr;
 
@@ -54,12 +39,16 @@ public class EventController : MonoBehaviour {
 	Vector3 tmpcam2 ;
 	Vector3 tmpAnno2 ;
 
-	float t ;
+	float scHeight;
+	float scWidth;
 
 	// Use this for initialization
 	void Start () {
 
         UIs = (UIController)gameObject.GetComponent(typeof(UIController));
+
+		scHeight = Screen.height;
+		scWidth = Screen.width;
 
         slidARMode = false;
         rotateMode = false;
@@ -68,9 +57,11 @@ public class EventController : MonoBehaviour {
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
 
-		t = 0;
 	}
-	
+
+	float  oldAngle ;
+	float  newAngle ;
+
 	// Update is called once per frame
 	void Update () {
 #if UNITY_IOS
@@ -111,6 +102,18 @@ public class EventController : MonoBehaviour {
                             CreateCircle(rayEnd, annoOption);
                         }
                     }
+					if(state.Equals("EDIT"))
+					{
+						if(rotateMode)
+						{
+							if(Input.touchCount >=2)
+							{
+								print ("Touch Count = "+Input.touchCount);
+								Vector2 cVector = touch.position - Input.GetTouch(1).position;
+								oldAngle = Mathf.Atan2(cVector.y,cVector.x);
+							}
+						}
+					}
 
                     
 				}
@@ -133,18 +136,37 @@ public class EventController : MonoBehaviour {
 							{
 								if(Input.touchCount == 1)
 								{
-									if(touch.deltaPosition.x > touch.deltaPosition.y)
+									print (touch.deltaPosition);
+									if(Mathf.Abs(touch.deltaPosition.x) > Mathf.Abs(touch.deltaPosition.y))
 									{
-										RotateYAxis(touch.deltaPosition.x*rotaSpeed*Time.deltaTime);
+
+										SetObjectOrientation(touch.deltaPosition.x*rotaSpeed*Time.deltaTime,"Y");
 									}
 									else
 									{
-										RotateXAxis(touch.deltaPosition.y*rotaSpeed*Time.deltaTime);
+										//SetObjectOrientation(touch.deltaPosition.y*rotaSpeed*Time.deltaTime,"X");
 									}
 								}
 								else if(Input.touchCount >=2)
 								{
-									
+									Vector2 t1PrevPos = touch.position - touch.deltaPosition;
+									Vector2 t2PrevPos = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
+
+									float prevMagnitude = (t1PrevPos - t2PrevPos).magnitude;
+									float cMagnitude = (touch.position - Input.GetTouch(1).position).magnitude;
+
+									float diffMagnitude = (prevMagnitude - cMagnitude)*0.01f;
+
+									print (-diffMagnitude);
+									SetObjectScale(-diffMagnitude);
+
+									//float oldAngle = Mathf.Atan2(oldPos.y,oldPos.x)*Mathf.Rad2Deg;
+//									Vector2 cPos = Input.GetTouch(1).position - touch.position;
+//									float cAngle = Mathf.Atan2(cPos.y,cPos.x)*Mathf.Rad2Deg;
+									//float deg = Vector2.Angle(oldPos,cPos);
+//									float deg = Mathf.DeltaAngle(cAngle,oldAngle);
+									//SetObjectOrientation(deg,"Z");
+
 								}
 							}
 							
@@ -204,7 +226,15 @@ public class EventController : MonoBehaviour {
 			
 				if (state.Equals ("EDIT")) {
 					if (selectedGameobject != null) {
-						MoveSlidAR (Input.mousePosition);
+
+						if(slidARMode)
+						{
+							MoveSlidAR (Input.mousePosition);
+						}
+						if(rotateMode)
+						{
+
+						}
 
 					}				
 				}
@@ -225,6 +255,8 @@ public class EventController : MonoBehaviour {
 			}
 		} 
 	}
+
+
     public void SlidARActive()
     {
         UIs.OnSlidARTouch();
@@ -233,6 +265,7 @@ public class EventController : MonoBehaviour {
     }
     public void RotateActive()
     {
+		destroyLine ();
         UIs.OnRotateTouch();
         slidARMode = false;
         rotateMode = true;
@@ -252,9 +285,7 @@ public class EventController : MonoBehaviour {
     public void DoneButton()
     {
         UIs.OnEditDone();
-        UIs.OnAddAnnoDone();
-        //addAnnoPanel.SetActive(false);
-        //editPanel.SetActive(false);
+        UIs.OnAddAnnoDone();        
         slidARMode = false;
         rotateMode = false;
         destroyLine ();
@@ -284,20 +315,20 @@ public class EventController : MonoBehaviour {
     }
 
 
-
-
-    public void RotateYAxis(float input)
-    {
-		if (selectedGameobject != null) {
-			annoScrip.SetOrientation(input);
-		}
-    }
-	public void RotateXAxis(float input)
+	public void SetObjectOrientation(float input,string axis)
 	{
 		if (selectedGameobject != null) {
-
+			annoScrip.SetOrientation(input,axis);
+		}
+	}    
+	public void SetObjectScale(float mag)
+	{
+		if (selectedGameobject != null) {
+			annoScrip.SetObjectScale(new Vector3(mag,mag,mag));
 		}
 	}
+
+
 	private void CreateCircle(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
 		newAnnotation.transform.parent = marker.transform;
@@ -323,14 +354,6 @@ public class EventController : MonoBehaviour {
 		Vector3 intCamToSc = Camera.main.WorldToScreenPoint (camPos);
 		Vector3 objToSc = Camera.main.WorldToScreenPoint (objPos);
 
-
-//		float disx = Mathf.Abs(tmpcam2.x - tmpAnno2.x);
-//		float disy = Mathf.Abs(tmpcam2.y - tmpAnno2.y);
-//
-//	
-//		float m = disy / disx;
-//		float c = tmpcam2.y - m * tmpAnno2.x;
-
 		float m = (intCamToSc.y-objToSc.y)/(intCamToSc.x-objToSc.x);
 		float c = intCamToSc.y - (m*intCamToSc.x);
 
@@ -351,18 +374,6 @@ public class EventController : MonoBehaviour {
 
 		Vector3 V1 = objPos - camPos;
 		Vector3 V2 =  touchPos - cCamPos ;
-
-		//print (newPosToWorld);
-		//print (Camera.main.transform.position);
-
-		//print (tmpAnnoPos);
-		//print (tmpCamPos);
-
-		print ("touch : "+Camera.main.ScreenToWorldPoint(touchPos));
-		print ("Camera Pos : "+Camera.main.transform.position);
-		print ("InitCamPos : "+camPos);
-		print ("ObjPos : "+objPos);
-
 
 		float[][] input = new float[3][];
 		input[0] = new float[3] { -V1.x, V2.x, camPos.x - cCamPos.x };
@@ -392,6 +403,9 @@ public class EventController : MonoBehaviour {
 	}
 	private void DrawSlidAR(){
 		lr.enabled = true;
+		int count = 2;
+		bool isCamOnSc = false;
+		bool isAnnoOnSc = false;
 
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
@@ -400,34 +414,55 @@ public class EventController : MonoBehaviour {
 		lr.material = lineMat;
 		lr.SetColors (Color.red,Color.red);
 		lr.SetWidth (0.005f,0.005f);
-		lr.SetVertexCount (2);	
-
 
 
 		tmpcam2 = Camera.main.WorldToScreenPoint (tmpCamPos);
 		tmpAnno2 = Camera.main.WorldToScreenPoint (tmpAnnoPos);
 
-		//print (tmpcam2);
+		Vector2 camOnScr = new Vector2 (tmpcam2.x,tmpcam2.y); 
+		Vector2 annoOnScr = new Vector2 (tmpAnno2.x,tmpAnno2.y); 
+		Vector2 vCamToAnno = annoOnScr - camOnScr;
 
-		Vector3 tmpcam3 = new Vector3 (tmpcam2.x,tmpcam2.y,1);
-		Vector3 tmpAnno3 = new Vector3 (tmpAnno2.x,tmpAnno2.y,1);
+		if(camOnScr.x >=0 || camOnScr.x < scWidth)
+		{
+			if(camOnScr.y >=0 || camOnScr.y < scHeight)
+			{
+				print ("1");
+				isCamOnSc = true;
+				count++;
+			}
+		}
+		if(annoOnScr.x>=0||annoOnScr.x < scWidth)
+		{
+			if(annoOnScr.y >=0 || annoOnScr.y < scHeight)
+			{
+				print ("2");
+				isAnnoOnSc = true;
+				count++;
+			}
+		}
 
-		//print (Camera.main.ScreenToWorldPoint(tmpcam2));
-		//print (Camera.main.ScreenToWorldPoint(tmpAnno3));
+		lr.SetVertexCount (count);	
 
-		lr.SetPosition (0, Camera.main.ScreenToWorldPoint(tmpcam2));
-		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno2));
-//		lr.SetPosition (0, Camera.main.ScreenToWorldPoint(tmpcam3));
-//		lr.SetPosition (1, Camera.main.ScreenToWorldPoint(tmpAnno3));			
+		if(!isCamOnSc)
+		{
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+		}
+		else
+		{
+			Vector2 fpoint = camOnScr - (2*vCamToAnno);
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,1)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
+			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+		}
+		if(isAnnoOnSc)
+		{
+			Vector2 lpoint = camOnScr + (2*vCamToAnno);
+			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,1)));
+		}
+
 	}
-//	private void PrepareData(){
-//		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
-//		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
-//		Vector3 tmpAnnoPos = annoScrip.GetAnnoPos ();
-//		Vector3 tmpcam2 = Camera.main.WorldToScreenPoint (tmpCamPos);
-//		Vector3 tmpAnno2 = Camera.main.WorldToScreenPoint (tmpAnnoPos);
-//
-//	}
 
 
 	public void RemoveSelectedAnno(){
@@ -437,10 +472,7 @@ public class EventController : MonoBehaviour {
 			selectedGameobject = null;
 
 		}
-//		if (TmpCircleGameobject != null) {
-//			Destroy(TmpCircleGameobject);
-//			TmpCircleGameobject = null;
-//		}
+
 	}
     public float[] guassianElim(float[][] rows)
     {
