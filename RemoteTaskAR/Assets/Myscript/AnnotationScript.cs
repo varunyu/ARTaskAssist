@@ -10,10 +10,10 @@ public class AnnotationScript : MonoBehaviour {
 
 	public Vector3 initCamPos;
 	public Vector3 initPos;
-
+    /*
 	private float objScale = 1.0f;
 	private Vector3 initScale;
-
+    */
 
 	// Use this for initialization
 	void Start () {
@@ -32,7 +32,7 @@ public class AnnotationScript : MonoBehaviour {
 
 
 		Vector3 rotaGrav = rotation * grav;
-		float toNorth = Input.compass.magneticHeading;
+		//float toNorth = Input.compass.magneticHeading;
 	
 		if (rotaGrav.y < -0 ) {
 
@@ -42,7 +42,7 @@ public class AnnotationScript : MonoBehaviour {
 		} else {
 			gameObject.transform.rotation = Quaternion.LookRotation(rotaGrav,Vector3.up);
 		}
-		Vector3 cEuler = gameObject.transform.eulerAngles;
+		//Vector3 cEuler = gameObject.transform.eulerAngles;
 		if (parallel) {
 			gameObject.transform.Rotate (new Vector3 (90, 0, 0));
 					
