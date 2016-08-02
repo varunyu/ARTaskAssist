@@ -18,7 +18,7 @@ public class AnnotationScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		gravity = Input.gyro.gravity;
-		initScale = new Vector3 (1, 1, 1);
+		//initScale = new Vector3 (1, 1, 1);
 		SetRotation ();
 	}
 
