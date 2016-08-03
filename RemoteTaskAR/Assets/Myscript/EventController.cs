@@ -8,6 +8,11 @@ public class EventController : MonoBehaviour {
 
 	public GameObject marker;
 	public GameObject annoPrefab;
+	public GameObject arrowPrefab;
+	public GameObject halfCPrefab;
+	public GameObject pArrowPrefab;
+	public GameObject cArrowPrefab;
+
 	private AnnotationScript annoScrip;
     private UIController UIs;
 
@@ -93,6 +98,7 @@ public class EventController : MonoBehaviour {
 					}
                     if (state.Equals("ADDANNO"))
                     {
+						/*
                         if (annotype.Equals("DEBUG"))
                         {
                             CreateAnno(rayEnd, annoOption);
@@ -101,6 +107,44 @@ public class EventController : MonoBehaviour {
                         {
                             CreateCircle(rayEnd, annoOption);
                         }
+						*/
+						GameObject selectPrefab = null;
+						switch(annotype)
+						{
+							case "DEBUG":
+
+							selectPrefab = annoPrefab;
+								break;
+
+							case "CIRCLE":
+
+							selectPrefab = circlePrefab;
+								break;
+
+							case "HALFCIRCLE":
+
+							selectPrefab = halfCPrefab;
+								break;
+
+							case "ARROW":
+
+							selectPrefab = arrowPrefab;
+								break;
+
+							case "CARROW":
+
+							selectPrefab = cArrowPrefab;
+								break;
+						}
+						if(selectPrefab != null){
+							CreateAnnotation(selectPrefab,rayEnd, annoOption);
+						}
+
+						/*
+						 * HALFCIRCLE
+						 * ARROW
+						 * CARROW
+						 */
                     }
 					if(state.Equals("EDIT"))
 					{
@@ -299,6 +343,10 @@ public class EventController : MonoBehaviour {
     {
         annotype = "CIRCLE";
     }
+	public void SetAnnoType(string name)
+	{
+		annotype = name;
+	}
 
     public void ChangeAnnoOption()
     {
@@ -328,6 +376,15 @@ public class EventController : MonoBehaviour {
 		}
 	}
 
+	private void CreateAnnotation(GameObject annoPrefab,Vector3 objePos,bool paraOption){
+
+		GameObject newAnnotation = Instantiate (annoPrefab,objePos,transform.rotation) as GameObject;
+		newAnnotation.transform.parent = marker.transform;
+		annoScrip = (AnnotationScript)newAnnotation.GetComponent (typeof(AnnotationScript));
+		annoScrip.SetState (paraOption);
+		annoScrip.InitCamaraPosition (Camera.main.transform.position);
+	}
+
 
 	private void CreateCircle(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
@@ -335,7 +392,7 @@ public class EventController : MonoBehaviour {
 		annoScrip = (AnnotationScript)newAnnotation.GetComponent (typeof(AnnotationScript));
 		annoScrip.SetState (paraOption);
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
-		TmpCircleGameobject = newAnnotation;
+		//TmpCircleGameobject = newAnnotation;
 	}
 	private void CreateAnno(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (annoPrefab,objePos,transform.rotation) as GameObject;
