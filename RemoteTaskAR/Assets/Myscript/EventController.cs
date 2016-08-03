@@ -366,12 +366,14 @@ public class EventController : MonoBehaviour {
 	public void SetObjectOrientation(float input,string axis)
 	{
 		if (selectedGameobject != null) {
+			annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 			annoScrip.SetOrientation(input,axis);
 		}
 	}    
 	public void SetObjectScale(float mag)
 	{
 		if (selectedGameobject != null) {
+			annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 			annoScrip.SetObjectScale(new Vector3(mag,mag,mag));
 		}
 	}
