@@ -7,9 +7,14 @@ public class AnnotationScript : MonoBehaviour {
 	public Vector3 vGra;
 	public Vector3 v3Current;
 	public bool parallel;
+    private int annotype;
+
 
 	public Vector3 initCamPos;
 	public Vector3 initPos;
+
+    public Material mat1;
+    public Material mat2;
     /*
 	private float objScale = 1.0f;
 	private Vector3 initScale;
@@ -114,5 +119,33 @@ public class AnnotationScript : MonoBehaviour {
 	{
 		gameObject.transform.localScale += scale;
 	}
+
+    public void SelectedAnnotation()
+    {
+        ChangeMatColor(mat2);
+    }
+    public void DeselectedAnnotatin()
+    {
+        ChangeMatColor(mat1);
+    }
+    private void ChangeMatColor(Material mat)
+    {
+        if (annotype > 20)
+        {
+            Transform c = gameObject.transform.GetChild(0).gameObject.transform.GetChild(0);
+            c.GetComponent<MeshRenderer>().material = mat;
+        }
+        else
+        {
+            Transform c = gameObject.transform.GetChild(0);
+            c.GetComponent<MeshRenderer>().material = mat;
+        }
+        
+    }
+    public void SetAnnoType(int t)
+    {
+        annotype = t;
+    }
+    
 }
 

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - annotation
+  - MarkerPannel
   layers:
   - Default
   - TransparentFX

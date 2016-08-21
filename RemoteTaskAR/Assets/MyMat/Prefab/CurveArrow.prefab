@@ -42,8 +42,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 196454}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .116999999, z: 0}
-  m_LocalScale: {x: 1.1495887, y: 1.04999995, z: 1.43616784}
+  m_LocalPosition: {x: 0, y: 0.042, z: 0}
+  m_LocalScale: {x: 1.1495887, y: 1.05, z: 1.4361678}
   m_Children:
   - {fileID: 487496}
   m_Father: {fileID: 0}
@@ -54,9 +54,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 102640}
-  m_LocalRotation: {x: -1, y: 1.62920685e-07, z: -1.62920685e-07, w: 2.65431496e-14}
-  m_LocalPosition: {x: 0, y: 0, z: .109999999}
-  m_LocalScale: {x: 4.55226517, y: 4.5522604, z: 4.5522604}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: -0.00000016292068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 7.7513866, y: 7.7513747, z: 7.7513747}
   m_Children: []
   m_Father: {fileID: 479316}
   m_RootOrder: 0
@@ -81,7 +81,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -103,8 +103,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .180000007, y: .0900000036, z: .200000003}
-  m_Center: {x: 0, y: .0299999993, z: .100000001}
+  m_Size: {x: 0.18, y: 0.09, z: 0.2}
+  m_Center: {x: 0, y: 0.03, z: 0.1}
 --- !u!95 &9522980
 Animator:
   serializedVersion: 3
@@ -139,6 +139,8 @@ MonoBehaviour:
   parallel: 0
   initCamPos: {x: 0, y: 0, z: 0}
   initPos: {x: 0, y: 0, z: 0}
+  mat1: {fileID: 2100000, guid: b236f0ceb2df843608d602c15fc97ae4, type: 2}
+  mat2: {fileID: 2100000, guid: bb8c18dea4dc14a6a82c0b76db060575, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -149,6 +151,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

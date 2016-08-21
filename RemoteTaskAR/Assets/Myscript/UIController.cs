@@ -22,6 +22,11 @@ public class UIController : MonoBehaviour {
     public Button rotateRightButton;
     public Button editDone;
 
+
+    public GameObject ArrowPannel;
+    public GameObject CArrowPannel;
+    public GameObject HalfCirclePannel;
+
     // Use this for initialization
     void Start () {
 	
@@ -73,5 +78,25 @@ public class UIController : MonoBehaviour {
     {
         addAnnoPanel.SetActive(false);
     }
-
+    public void ArrowPannelOpen()
+    {
+        ClearAllSubPannel();
+        ArrowPannel.SetActive(true);
+    }
+    public void CArrowPannelOpen()
+    {
+        ClearAllSubPannel();
+        CArrowPannel.SetActive(true);
+    }
+    public void HalfCirclPannelOpen()
+    {
+        ClearAllSubPannel();
+        HalfCirclePannel.SetActive(true);
+    }
+    public void ClearAllSubPannel()
+    {
+        ArrowPannel.SetActive(false);
+        CArrowPannel.SetActive(false);
+        HalfCirclePannel.SetActive(false);
+    }
 }

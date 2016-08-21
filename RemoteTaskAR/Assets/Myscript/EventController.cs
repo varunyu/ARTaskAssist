@@ -8,18 +8,40 @@ public class EventController : MonoBehaviour {
 
 	public GameObject marker;
 	public GameObject annoPrefab;
-	public GameObject arrowPrefab;
-	public GameObject halfCPrefab;
+	public GameObject[] arrowPrefab = new GameObject[2] ;
+	public GameObject[] halfCPrefab = new GameObject[2];
 	public GameObject pArrowPrefab;
-	public GameObject cArrowPrefab;
+	public GameObject[] cArrowPrefab = new GameObject[4];
 
-	private AnnotationScript annoScrip;
+    private AnnotationScript annoScrip;
     private UIController UIs;
 
 	public GameObject circlePrefab;
 
 	private string state;
     private string annotype;
+
+    private int annotationtype;
+    /*
+        case 1 = arrow up
+        case 2 = arrow down
+        case 3 = arrow forward
+
+        case 11 = curve arrow up  
+        case 12 = curve arrow left      
+        case 13 = curve arrow down        
+        case 14 = curve arrow right
+
+        ** perpendicular to gravity
+        case 21 = Half circle left
+        case 22 = Half circle right
+
+        ** parallel to gravity
+        case 31 = Half circle left
+        case 32 = Half circle right
+    */
+
+
     private bool annoOption;
 
     public GameObject addAnnoPanel;
@@ -39,7 +61,7 @@ public class EventController : MonoBehaviour {
 	private Ray ray;
 	private Vector3 grav;
 
-	private float rotaSpeed = 10.0f;
+	private float rotaSpeed = 20.0f;
 
 	Vector3 tmpcam2 ;
 	Vector3 tmpAnno2 ;
@@ -69,7 +91,7 @@ public class EventController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-#if UNITY_IOS
+
 		if (Input.touches.Length >0) {
 			Touch touch = Input.GetTouch(0);
 
@@ -89,26 +111,25 @@ public class EventController : MonoBehaviour {
 							if(hit.collider.tag.Equals ("annotation"))
 							{
 								print (hit.transform.name);
+
+                                if (selectedGameobject != null)
+                                {
+                                    SelectedAnnotationMat(false);
+                                }
+
 								selectedGameobject = hit.transform.gameObject;
-								//PrepareData();
-								break;
+                                SelectedAnnotationMat(true);
+                                //PrepareData();
+                                break;
 							}
 							
 						}
 					}
                     if (state.Equals("ADDANNO"))
                     {
-						/*
-                        if (annotype.Equals("DEBUG"))
-                        {
-                            CreateAnno(rayEnd, annoOption);
-                        }
-                        if (annotype.Equals("CIRCLE"))
-                        {
-                            CreateCircle(rayEnd, annoOption);
-                        }
-						*/
+						
 						GameObject selectPrefab = null;
+                        /*
 						switch(annotype)
 						{
 							case "DEBUG":
@@ -136,15 +157,76 @@ public class EventController : MonoBehaviour {
 							selectPrefab = cArrowPrefab;
 								break;
 						}
-						if(selectPrefab != null){
+                        */
+                        if (annotationtype > 0 && annotationtype < 10)
+                        {
+                            //selectPrefab = arrowPrefab;
+                            switch (annotationtype)
+                            {
+                                case 1:
+                                    selectPrefab = arrowPrefab[0];
+                                    annoOption = false;
+                                    break;
+                                case 2:
+                                    selectPrefab = arrowPrefab[1];
+                                    annoOption = false;
+                                    break;
+                                case 3:
+                                    selectPrefab = arrowPrefab[1];
+                                    annoOption = true;
+                                    break;
+                            }
+
+
+                        }
+                        else if (annotationtype > 10 && annotationtype < 20)
+                        {
+                            //selectPrefab = cArrowPrefab;
+                            annoOption = true;
+                            switch (annotationtype)
+                            {
+                                case 11:
+                                    selectPrefab = cArrowPrefab[0];
+                                    break;
+                                case 12:
+                                    selectPrefab = cArrowPrefab[1];
+                                    break;
+                                case 13:
+                                    selectPrefab = cArrowPrefab[2];
+                                    break;
+                                case 14:
+                                    selectPrefab = cArrowPrefab[3];
+                                    break;
+                            }
+                        }
+                        else if (annotationtype > 20)
+                        {
+                            switch (annotationtype)
+                            {
+                                case 21:
+                                    selectPrefab = halfCPrefab[1];
+                                    annoOption = false;
+                                    break;
+                                case 22:
+                                    selectPrefab = halfCPrefab[0];
+                                    annoOption = false;
+                                    break;
+                                case 31:
+                                    selectPrefab = halfCPrefab[1];
+                                    annoOption = true;
+                                    break;
+                                case 32:
+                                    selectPrefab = halfCPrefab[0];
+                                    annoOption = true;
+                                    break;
+                            }
+                            //selectPrefab = halfCPrefab;
+                        }
+                        if (selectPrefab != null){
 							CreateAnnotation(selectPrefab,rayEnd, annoOption);
 						}
 
-						/*
-						 * HALFCIRCLE
-						 * ARROW
-						 * CARROW
-						 */
+						
                     }
 					if(state.Equals("EDIT"))
 					{
@@ -222,7 +304,7 @@ public class EventController : MonoBehaviour {
 
 
 		}
-#endif
+
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0)){
 			
@@ -250,6 +332,7 @@ public class EventController : MonoBehaviour {
 
 					}
 				}
+                /*
                 if (state.Equals("ADDANNO"))
                 {
                     if (annotype.Equals("DEBUG"))
@@ -261,6 +344,7 @@ public class EventController : MonoBehaviour {
                         CreateCircle(rayEnd, annoOption);
                     }
                 }
+                */
                 
 			}
 
@@ -343,6 +427,13 @@ public class EventController : MonoBehaviour {
     {
         annotype = "CIRCLE";
     }
+    /// <summary>
+    /// ///////////////////////////////////////////////
+    /// </summary>    
+    public void SetAnno(int type)
+    {
+        annotationtype = type;
+    }
 	public void SetAnnoType(string name)
 	{
 		annotype = name;
@@ -362,8 +453,20 @@ public class EventController : MonoBehaviour {
         }
     }
 
+    private void SelectedAnnotationMat(bool seleted)
+    {
+        AnnotationScript tmp = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
+        if (seleted)
+        {
+            tmp.SelectedAnnotation();
+        }
+        else
+        {
+            tmp.DeselectedAnnotatin();
+        }
+    }
 
-	public void SetObjectOrientation(float input,string axis)
+    public void SetObjectOrientation(float input,string axis)
 	{
 		if (selectedGameobject != null) {
 			annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
@@ -385,7 +488,8 @@ public class EventController : MonoBehaviour {
 		annoScrip = (AnnotationScript)newAnnotation.GetComponent (typeof(AnnotationScript));
 		annoScrip.SetState (paraOption);
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
-	}
+        annoScrip.SetAnnoType(annotationtype);
+    }
 
 
 	private void CreateCircle(Vector3 objePos,bool paraOption){
@@ -395,16 +499,7 @@ public class EventController : MonoBehaviour {
 		annoScrip.SetState (paraOption);
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
 		//TmpCircleGameobject = newAnnotation;
-	}
-	private void CreateAnno(Vector3 objePos,bool paraOption){
-		GameObject newAnnotation = Instantiate (annoPrefab,objePos,transform.rotation) as GameObject;
-		newAnnotation.transform.parent = marker.transform;
-		annoScrip = (AnnotationScript)newAnnotation.GetComponent (typeof(AnnotationScript));
-		annoScrip.SetState (paraOption);
-		annoScrip.InitCamaraPosition (Camera.main.transform.position);
-
-	}
-
+	}	
 	private void MoveSlidAR(Vector3 pos){
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 		Vector3 camPos = annoScrip.GetInitCamPos ();

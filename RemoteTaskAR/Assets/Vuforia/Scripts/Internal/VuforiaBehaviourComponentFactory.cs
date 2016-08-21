@@ -67,6 +67,10 @@ namespace Vuforia
             return gameObject.AddComponent<ObjectTargetBehaviour>();
         }
 
+        public VuMarkAbstractBehaviour AddVuMarkBehaviour(GameObject gameObject)
+        {
+            return gameObject.AddComponent<VuMarkBehaviour>();
+        }
 
         #endregion // PUBLIC_METHODS
     }

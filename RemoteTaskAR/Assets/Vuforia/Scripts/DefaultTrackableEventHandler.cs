@@ -17,15 +17,17 @@ namespace Vuforia
         #region PRIVATE_MEMBER_VARIABLES
  
         private TrackableBehaviour mTrackableBehaviour;
-    
+
         #endregion // PRIVATE_MEMBER_VARIABLES
 
-
+        private GameObject MarkerPannel;
 
         #region UNTIY_MONOBEHAVIOUR_METHODS
     
         void Start()
         {
+
+            MarkerPannel = GameObject.FindGameObjectWithTag ("MarkerPannel");
             mTrackableBehaviour = GetComponent<TrackableBehaviour>();
             if (mTrackableBehaviour)
             {
@@ -82,7 +84,7 @@ namespace Vuforia
             {
                 component.enabled = true;
             }
-
+            MarkerPannel.SetActive(false);
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         }
 
@@ -105,6 +107,7 @@ namespace Vuforia
             }
 
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
+            MarkerPannel.SetActive(true);
         }
 
         #endregion // PRIVATE_METHODS
