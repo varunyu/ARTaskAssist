@@ -59,6 +59,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.181, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.4}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 450702}
   m_Father: {fileID: 0}
@@ -69,9 +70,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 122386}
-  m_LocalRotation: {x: -0.00000011518241, y: 0.70722896, z: -0.7069846, w: -0.00000011522223}
+  m_LocalRotation: {x: -0.00000016292068, y: 0.00000016292068, z: 1, w: 2.654315e-14}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 180, y: -180, z: 0}
   m_Children:
   - {fileID: 478460}
   m_Father: {fileID: 409692}
@@ -85,6 +87,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.10686667, z: 0}
   m_LocalScale: {x: 10.691977, y: 10.691977, z: 10.691974}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 450702}
   m_RootOrder: 0
@@ -157,8 +160,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.58, y: -0.34, z: 0.15}
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Size: {x: 0.58, y: -0.1, z: 0.3}
+  m_Center: {x: 0, y: 0, z: -0.14}
 --- !u!114 &11473232
 MonoBehaviour:
   m_ObjectHideFlags: 1

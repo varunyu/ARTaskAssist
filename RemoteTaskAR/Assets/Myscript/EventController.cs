@@ -18,8 +18,7 @@ public class EventController : MonoBehaviour {
 
 	public GameObject circlePrefab;
 
-	private string state;
-    private string annotype;
+	private string state;    
 
     private int annotationtype;
     /*
@@ -103,64 +102,38 @@ public class EventController : MonoBehaviour {
 					ray = Camera.main.ScreenPointToRay (touch.position);
 					Vector3 rayEnd = ray.GetPoint (4);
 
-					if(state.Equals("NONE"))
+					if(state.Equals("NONE") || state.Equals ("EDIT"))
 					{
-						foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) 
-						{
-							
-							if(hit.collider.tag.Equals ("annotation"))
+						if (!slidARMode && !rotateMode) {
+							foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) 
 							{
-								print (hit.transform.name);
 
-                                if (selectedGameobject != null)
-                                {
-                                    SelectedAnnotationMat(false);
-                                }
+								if(hit.collider.tag.Equals ("annotation"))
+								{
+									print (hit.transform.name);
 
-								selectedGameobject = hit.transform.gameObject;
-                                SelectedAnnotationMat(true);
-                                //PrepareData();
-                                break;
+									if (selectedGameobject != null)
+									{
+										SelectedAnnotationMat(false);
+									}
+
+									selectedGameobject = hit.transform.gameObject;
+									SelectedAnnotationMat(true);
+
+									break;
+								}
+
 							}
-							
 						}
+
 					}
                     if (state.Equals("ADDANNO"))
                     {
 						
 						GameObject selectPrefab = null;
-                        /*
-						switch(annotype)
-						{
-							case "DEBUG":
-
-							selectPrefab = annoPrefab;
-								break;
-
-							case "CIRCLE":
-
-							selectPrefab = circlePrefab;
-								break;
-
-							case "HALFCIRCLE":
-
-							selectPrefab = halfCPrefab;
-								break;
-
-							case "ARROW":
-
-							selectPrefab = arrowPrefab;
-								break;
-
-							case "CARROW":
-
-							selectPrefab = cArrowPrefab;
-								break;
-						}
-                        */
+                        
                         if (annotationtype > 0 && annotationtype < 10)
-                        {
-                            //selectPrefab = arrowPrefab;
+                        {                            
                             switch (annotationtype)
                             {
                                 case 1:
@@ -180,8 +153,7 @@ public class EventController : MonoBehaviour {
 
                         }
                         else if (annotationtype > 10 && annotationtype < 20)
-                        {
-                            //selectPrefab = cArrowPrefab;
+                        {                            
                             annoOption = true;
                             switch (annotationtype)
                             {
@@ -205,22 +177,22 @@ public class EventController : MonoBehaviour {
                             {
                                 case 21:
                                     selectPrefab = halfCPrefab[1];
-                                    annoOption = false;
+                                    annoOption = true;
                                     break;
                                 case 22:
                                     selectPrefab = halfCPrefab[0];
-                                    annoOption = false;
+                                    annoOption = true;
                                     break;
                                 case 31:
                                     selectPrefab = halfCPrefab[1];
-                                    annoOption = true;
+                                    annoOption = false;
                                     break;
                                 case 32:
                                     selectPrefab = halfCPrefab[0];
-                                    annoOption = true;
+                                    annoOption = false;
                                     break;
                             }
-                            //selectPrefab = halfCPrefab;
+                            
                         }
                         if (selectPrefab != null){
 							CreateAnnotation(selectPrefab,rayEnd, annoOption);
@@ -285,14 +257,6 @@ public class EventController : MonoBehaviour {
 
 									print (-diffMagnitude);
 									SetObjectScale(-diffMagnitude);
-
-									//float oldAngle = Mathf.Atan2(oldPos.y,oldPos.x)*Mathf.Rad2Deg;
-//									Vector2 cPos = Input.GetTouch(1).position - touch.position;
-//									float cAngle = Mathf.Atan2(cPos.y,cPos.x)*Mathf.Rad2Deg;
-									//float deg = Vector2.Angle(oldPos,cPos);
-//									float deg = Mathf.DeltaAngle(cAngle,oldAngle);
-									//SetObjectOrientation(deg,"Z");
-
 								}
 							}
 							
@@ -314,10 +278,6 @@ public class EventController : MonoBehaviour {
 				ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				Vector3 rayEnd = ray.GetPoint (4);
 
-				//RaycastHit hit;
-
-
-
 				if(state.Equals("NONE")){
 
 					foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) {
@@ -332,19 +292,6 @@ public class EventController : MonoBehaviour {
 
 					}
 				}
-                /*
-                if (state.Equals("ADDANNO"))
-                {
-                    if (annotype.Equals("DEBUG"))
-                    {
-                        CreateAnno(rayEnd, annoOption);
-                    }
-                    if (annotype.Equals("CIRCLE"))
-                    {
-                        CreateCircle(rayEnd, annoOption);
-                    }
-                }
-                */
                 
 			}
 
@@ -378,8 +325,6 @@ public class EventController : MonoBehaviour {
                 {
                     DrawSlidAR();
                 }
-				
-				//print ("edit on");
 			}
 		} 
 	}
@@ -418,27 +363,13 @@ public class EventController : MonoBehaviour {
         rotateMode = false;
         destroyLine ();
         state = "NONE";
-    }
-    public void TestAnnoButton()
-    {
-        annotype = "DEBUG";
-    }
-    public void CircleAnnoButton()
-    {
-        annotype = "CIRCLE";
-    }
-    /// <summary>
-    /// ///////////////////////////////////////////////
-    /// </summary>    
+    } 
+   
     public void SetAnno(int type)
     {
         annotationtype = type;
     }
-	public void SetAnnoType(string name)
-	{
-		annotype = name;
-	}
-
+	/*
     public void ChangeAnnoOption()
     {
         if (annoOption)
@@ -452,7 +383,7 @@ public class EventController : MonoBehaviour {
 			modeText.text = "Parallel";
         }
     }
-
+	*/
     private void SelectedAnnotationMat(bool seleted)
     {
         AnnotationScript tmp = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
@@ -490,8 +421,7 @@ public class EventController : MonoBehaviour {
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
         annoScrip.SetAnnoType(annotationtype);
     }
-
-
+	/*
 	private void CreateCircle(Vector3 objePos,bool paraOption){
 		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
 		newAnnotation.transform.parent = marker.transform;
@@ -499,7 +429,7 @@ public class EventController : MonoBehaviour {
 		annoScrip.SetState (paraOption);
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
 		//TmpCircleGameobject = newAnnotation;
-	}	
+	}	*/
 	private void MoveSlidAR(Vector3 pos){
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 		Vector3 camPos = annoScrip.GetInitCamPos ();
@@ -718,11 +648,3 @@ public class EventController : MonoBehaviour {
     }
 
 }
-
-//			Matrix4x4 cam_pos = Camera.main.worldToCameraMatrix;
-//			Matrix4x4 loc_pos = Marker.transform.worldToLocalMatrix;
-//			Matrix4x4 loc_in_cam_space = cam_pos.inverse * loc_pos;
-
-
-
-
