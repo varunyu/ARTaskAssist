@@ -130,7 +130,7 @@ public class AnnotationScript : MonoBehaviour {
     }
     private void ChangeMatColor(Material mat)
     {
-        if (annotype > 20)
+        if (annotype > 4)
         {
             Transform c = gameObject.transform.GetChild(0).gameObject.transform.GetChild(0);
             c.GetComponent<MeshRenderer>().material = mat;
