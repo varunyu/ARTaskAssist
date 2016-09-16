@@ -97,6 +97,8 @@ public class eventcontroller2 : MonoBehaviour {
 		GameObject newAnnotation = Instantiate (annoPrefab,objePos,transform.rotation) as GameObject;
 		newAnnotation.transform.parent = marker.transform;
 		annoScrip = (annoScript2)newAnnotation.GetComponent (typeof(annoScript2));
+		annoScrip.SetInitCam(Camera.main.transform.position);
+
 	}
 
 	private void SelectedAnnotationMat(bool seleted)
@@ -111,5 +113,9 @@ public class eventcontroller2 : MonoBehaviour {
 			tmp.DeselectedAnnotatin();
 		}
 	}
+	public void SetOrientation(float deg,string axis){
 
+		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		tmp.SetOrientation(deg,axis);
+	}
 }
