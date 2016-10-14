@@ -92,6 +92,10 @@ public class eventcontroller2 : MonoBehaviour {
 		}
 	}
 
+	public void SeclectAnnoType(int i){
+		annotationtype = i;
+	}
+
 	private void CreateAnnotation(GameObject annoPrefab,Vector3 objePos){
 
 		GameObject newAnnotation = Instantiate (annoPrefab,objePos,transform.rotation) as GameObject;
@@ -113,9 +117,36 @@ public class eventcontroller2 : MonoBehaviour {
 			tmp.DeselectedAnnotatin();
 		}
 	}
-	public void SetOrientation(float deg,string axis){
+	public void RemoveSelectedAnno(){
+
+		if (selectedGameobject != null) {
+			Destroy (selectedGameobject);
+			selectedGameobject = null;
+
+		}
+
+	}
+	public void PositionButton(float d){
+	
+	}
+	public void ScaleButton(float d){
+		float tmpscale = selectedGameobject.transform.localScale.x+d;
+		Vector3 newScale = new Vector3 (tmpscale,tmpscale,tmpscale);
+		selectedGameobject.transform.localScale = newScale;
+	}
+	public void SetOrientationY(float deg){
 
 		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
-		tmp.SetOrientation(deg,axis);
+		tmp.SetOrientation(deg,"Y");
+	}
+	public void SetOrientationZ(float deg){
+
+		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		tmp.SetOrientation(deg,"Z");
+	}
+	public void SetOrientationX(float deg){
+
+		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		tmp.SetOrientation(deg,"X");
 	}
 }

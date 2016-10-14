@@ -77,4 +77,6 @@ public class annoScript2 : MonoBehaviour {
 		}		
 	}
 
+
+
 }
