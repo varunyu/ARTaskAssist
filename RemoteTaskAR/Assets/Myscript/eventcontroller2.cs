@@ -91,7 +91,9 @@ public class eventcontroller2 : MonoBehaviour {
 
 		}
 	}
-
+	public void ChangeState(string st){
+		state = st;
+	}
 	public void SeclectAnnoType(int i){
 		annotationtype = i;
 	}
@@ -102,7 +104,7 @@ public class eventcontroller2 : MonoBehaviour {
 		newAnnotation.transform.parent = marker.transform;
 		annoScrip = (annoScript2)newAnnotation.GetComponent (typeof(annoScript2));
 		annoScrip.SetInitCam(Camera.main.transform.position);
-
+		state = "NONE";
 	}
 
 	private void SelectedAnnotationMat(bool seleted)
