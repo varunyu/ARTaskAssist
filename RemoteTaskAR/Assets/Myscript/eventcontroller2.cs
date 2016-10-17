@@ -78,7 +78,7 @@ public class eventcontroller2 : MonoBehaviour {
 							selectPrefab = annoPrefab[4];
 							break;
 						}
-
+						print (selectPrefab);
 						if (selectPrefab != null){
 							CreateAnnotation(selectPrefab,rayEnd);
 						}
@@ -93,6 +93,7 @@ public class eventcontroller2 : MonoBehaviour {
 	}
 	public void ChangeState(string st){
 		state = st;
+		print (state);
 	}
 	public void SeclectAnnoType(int i){
 		annotationtype = i;
@@ -128,8 +129,17 @@ public class eventcontroller2 : MonoBehaviour {
 		}
 
 	}
-	public void PositionButton(float d){
-	
+	public void PositionButton(float input){
+		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		Vector3 camPos = tmp.GetInitCam ();
+		Vector3 objPos = selectedGameobject.transform.position;
+
+		Vector3 V1 = objPos - camPos;
+		float d = 1f + input;
+
+		selectedGameobject.transform.position = camPos + (d * V1);
+
+
 	}
 	public void ScaleButton(float d){
 		float tmpscale = selectedGameobject.transform.localScale.x+d;

@@ -353,34 +353,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 44487522a1a371646a2dac6e848c5613, type: 2}
   m_IsPrefabParent: 0
---- !u!21 &553782675
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: HiroMarker2_scaledMaterial
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 2800000, guid: 38976607b5944c8990dd2b15babee7fd, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats: {}
-    m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
 --- !u!1001 &591384391
 Prefab:
   m_ObjectHideFlags: 0
@@ -482,11 +454,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11436236, guid: bf30d577eead1ef40bcf2b404289daf4, type: 2}
       propertyPath: mAutoInitTracker
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11436236, guid: bf30d577eead1ef40bcf2b404289daf4, type: 2}
       propertyPath: mAutoStartTracker
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11436236, guid: bf30d577eead1ef40bcf2b404289daf4, type: 2}
       propertyPath: mModelCorrectionMode
@@ -1018,6 +990,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
+--- !u!21 &1407209342
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: HiroMarker2_scaledMaterial
+  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 2800000, guid: 38976607b5944c8990dd2b15babee7fd, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats: {}
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
 --- !u!114 &1421220091 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11444710, guid: 961d613ee7ef94861980f58e82e6fd92,
@@ -1486,7 +1486,7 @@ Prefab:
     - target: {fileID: 2300000, guid: 384a0d8cc71cef74a873b3353337ea2c, type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 553782675}
+      objectReference: {fileID: 1407209342}
     - target: {fileID: 400000, guid: 384a0d8cc71cef74a873b3353337ea2c, type: 2}
       propertyPath: m_LocalScale.x
       value: 1

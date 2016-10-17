@@ -10,10 +10,10 @@ public class annoScript2 : MonoBehaviour {
 
 	// Use this for initialization
 
-	private Vector3 pos;
+	private Vector3 initPos;
 
 	void Start () {
-		pos = gameObject.transform.position;
+		initPos = gameObject.transform.position;
 	}
 	
 	// Update is called once per frame
@@ -50,10 +50,10 @@ public class annoScript2 : MonoBehaviour {
 		return initCam;
 	}
 	public void SetPos(Vector3 p){
-		pos = p;
+		initPos = p;
 	}
 	public Vector3 GetPos(){
-		return pos;
+		return initPos;
 	}
 	public void SetAnnoType(int t)
 	{
