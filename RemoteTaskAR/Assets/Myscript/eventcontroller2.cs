@@ -81,6 +81,7 @@ public class eventcontroller2 : MonoBehaviour {
 						print (selectPrefab);
 						if (selectPrefab != null){
 							CreateAnnotation(selectPrefab,rayEnd);
+							selectPrefab = null;
 						}
 
 
@@ -105,7 +106,7 @@ public class eventcontroller2 : MonoBehaviour {
 		newAnnotation.transform.parent = marker.transform;
 		annoScrip = (annoScript2)newAnnotation.GetComponent (typeof(annoScript2));
 		annoScrip.SetInitCam(Camera.main.transform.position);
-		state = "NONE";
+
 	}
 
 	private void SelectedAnnotationMat(bool seleted)

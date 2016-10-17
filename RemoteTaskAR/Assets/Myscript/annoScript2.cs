@@ -6,7 +6,7 @@ public class annoScript2 : MonoBehaviour {
 	private int annotype;
 	public Material mat1;
 	public Material mat2;
-	private Vector3 initCam;
+	public Vector3 initCam;
 
 	// Use this for initialization
 
@@ -14,6 +14,7 @@ public class annoScript2 : MonoBehaviour {
 
 	void Start () {
 		initPos = gameObject.transform.position;
+
 	}
 	
 	// Update is called once per frame
@@ -42,6 +43,9 @@ public class annoScript2 : MonoBehaviour {
 			c.GetComponent<MeshRenderer>().material = mat;
 		}
 
+	}
+	public void SetEuler(){
+		gameObject.transform.eulerAngles = new Vector3 (0, 0, 0);
 	}
 	public void SetInitCam(Vector3 cam){
 		initCam = cam;
