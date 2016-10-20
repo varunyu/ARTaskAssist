@@ -51,7 +51,7 @@ public class eventcontroller2 : MonoBehaviour {
 
 								selectedGameobject = hit.transform.gameObject;
 								SelectedAnnotationMat(true);
-
+								PrepareData ();
 								break;
 							}
 						}
@@ -81,7 +81,7 @@ public class eventcontroller2 : MonoBehaviour {
 						print (selectPrefab);
 						if (selectPrefab != null){
 							CreateAnnotation(selectPrefab,rayEnd);
-							selectPrefab = null;
+							annotationtype = 99;
 						}
 
 
@@ -109,6 +109,13 @@ public class eventcontroller2 : MonoBehaviour {
 
 	}
 
+	private Vector3 camPos;
+	private Vector3 objPos;
+
+	public void PrepareData(){
+		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		camPos = tmp.GetInitCam ();
+	}
 	private void SelectedAnnotationMat(bool seleted)
 	{
 		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
@@ -131,9 +138,11 @@ public class eventcontroller2 : MonoBehaviour {
 
 	}
 	public void PositionButton(float input){
+		/*
 		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
 		Vector3 camPos = tmp.GetInitCam ();
-		Vector3 objPos = selectedGameobject.transform.position;
+		*/
+		objPos = selectedGameobject.transform.position;
 
 		Vector3 V1 = objPos - camPos;
 		float d = 1f + input;

@@ -68,6 +68,9 @@ public class EventController : MonoBehaviour {
 	float scHeight;
 	float scWidth;
 
+	private Vector3 tmpCamPos ;
+	private Vector3 tmpAnnoPos;
+
 	// Use this for initialization
 	void Start () {
 
@@ -430,13 +433,26 @@ public class EventController : MonoBehaviour {
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
 		//TmpCircleGameobject = newAnnotation;
 	}	*/
+
+
+
+	public void PrepareSlidARData(){
+		print ("prepare");
+		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
+		tmpCamPos = annoScrip.GetInitCamPos ();
+		tmpAnnoPos = annoScrip.GetAnnoPos ();
+
+	}
+
 	private void MoveSlidAR(Vector3 pos){
+		/*
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 		Vector3 camPos = annoScrip.GetInitCamPos ();
 		Vector3 objPos = annoScrip.GetAnnoPos ();
+		*/
 
-		Vector3 intCamToSc = Camera.main.WorldToScreenPoint (camPos);
-		Vector3 objToSc = Camera.main.WorldToScreenPoint (objPos);
+		Vector3 intCamToSc = Camera.main.WorldToScreenPoint (tmpCamPos);
+		Vector3 objToSc = Camera.main.WorldToScreenPoint (tmpAnnoPos);
 
 		float m = (intCamToSc.y-objToSc.y)/(intCamToSc.x-objToSc.x);
 		float c = intCamToSc.y - (m*intCamToSc.x);
@@ -456,13 +472,13 @@ public class EventController : MonoBehaviour {
 		Vector3 cCamPos = Camera.main.transform.position;
 		Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
 
-		Vector3 V1 = objPos - camPos;
+		Vector3 V1 = tmpAnnoPos - tmpCamPos;
 		Vector3 V2 =  touchPos - cCamPos ;
 
 		float[][] input = new float[3][];
-		input[0] = new float[3] { -V1.x, V2.x, camPos.x - cCamPos.x };
-		input[1] = new float[3] { -V1.y, V2.y, camPos.y - cCamPos.y };
-		input[2] = new float[3] { -V1.z, V2.z, camPos.z - cCamPos.z };
+		input[0] = new float[3] { -V1.x, V2.x, tmpCamPos.x - cCamPos.x };
+		input[1] = new float[3] { -V1.y, V2.y, tmpCamPos.y - cCamPos.y };
+		input[2] = new float[3] { -V1.z, V2.z, tmpCamPos.z - cCamPos.z };
 
 //		print (input[0][0]+":"+input[0][1]+":"+input[0][2]);
 //		print (input[1][0]+":"+input[1][1]+":"+input[1][2]);
@@ -475,7 +491,7 @@ public class EventController : MonoBehaviour {
 		//print (d+":"+t);
         //print(tmpCamPos + " : " + d + " : " + rayInit);
         //print(tmpCamPos + (d*rayInit));
-		selectedGameobject.transform.position = camPos + (d * V1);
+		selectedGameobject.transform.position = tmpCamPos + (d * V1);
 
         
 	}
@@ -490,10 +506,11 @@ public class EventController : MonoBehaviour {
 		int count = 2;
 		bool isCamOnSc = false;
 		bool isAnnoOnSc = false;
-
+		/*
 		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
 		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
 		Vector3 tmpAnnoPos = annoScrip.GetAnnoPos ();
+		*/
 
 		lr.material = lineMat;
 		lr.SetColors (Color.red,Color.red);
@@ -511,7 +528,7 @@ public class EventController : MonoBehaviour {
 		{
 			if(camOnScr.y >=0 || camOnScr.y < scHeight)
 			{
-				print ("1");
+				//print ("1");
 				isCamOnSc = true;
 				count++;
 			}
@@ -520,7 +537,7 @@ public class EventController : MonoBehaviour {
 		{
 			if(annoOnScr.y >=0 || annoOnScr.y < scHeight)
 			{
-				print ("2");
+				//print ("2");
 				isAnnoOnSc = true;
 				count++;
 			}
