@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Main.unity
+    path: Assets/Scenes/Main.unity
   - enabled: 1
-    path: Assets/AR_Gravity.unity
+    path: Assets/Scenes/AR_Gravity.unity
   - enabled: 1
-    path: Assets/AR_Normal.unity
+    path: Assets/Scenes/AR_Normal.unity

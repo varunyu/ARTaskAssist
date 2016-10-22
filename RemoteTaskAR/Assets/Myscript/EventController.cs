@@ -90,7 +90,7 @@ public class EventController : MonoBehaviour {
 
 	float  oldAngle ;
 	float  newAngle ;
-
+	int counts =0;
 	// Update is called once per frame
 	void Update () {
 
@@ -326,7 +326,12 @@ public class EventController : MonoBehaviour {
                 //PrepareData();
                 if (slidARMode)
                 {
-                    DrawSlidAR();
+					counts++;
+					if (counts == 5) {
+						DrawSlidAR();
+						counts = 0;
+					}
+
                 }
 			}
 		} 
