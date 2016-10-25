@@ -32,7 +32,7 @@ public class annoScript2 : MonoBehaviour {
 	}
 	private void ChangeMatColor(Material mat)
 	{
-		if (annotype > 4)
+		if (annotype >= 3)
 		{
 			Transform c = gameObject.transform.GetChild(0).gameObject.transform.GetChild(0);
 			c.GetComponent<MeshRenderer>().material = mat;

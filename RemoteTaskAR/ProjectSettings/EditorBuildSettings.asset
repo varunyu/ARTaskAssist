@@ -11,3 +11,15 @@ EditorBuildSettings:
     path: Assets/Scenes/AR_Gravity.unity
   - enabled: 1
     path: Assets/Scenes/AR_Normal.unity
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_Normal.unity
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_Grav.unity
+  - enabled: 1
+    path: Assets/Scenes/EasyTask_Grav.unity
+  - enabled: 1
+    path: Assets/Scenes/EasyTask_Normal.unity
+  - enabled: 1
+    path: Assets/Scenes/HardTask_Grav.unity
+  - enabled: 1
+    path: Assets/Scenes/HardTask_Normal.unity

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - annotation
   - MarkerPannel
+  - UI
   layers:
   - Default
   - TransparentFX
