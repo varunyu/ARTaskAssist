@@ -71,6 +71,10 @@ public class EventController : MonoBehaviour {
 	private Vector3 tmpCamPos ;
 	private Vector3 tmpAnnoPos;
 
+	public float[] targetPos;
+	public float[] targetOren;
+	public float[] targetScale;
+
 	// Use this for initialization
 	void Start () {
 
@@ -86,6 +90,26 @@ public class EventController : MonoBehaviour {
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
 
+		TargetSetUp ();
+
+	}
+
+	private void TargetSetUp(){
+		targetPos = new float[3];
+		targetOren = new float[3];
+		targetScale = new float[3];
+
+		targetPos [0] = 0.150f;
+		targetPos [1] = -0.020f;
+		targetPos [2] = -0.132f;
+
+		targetOren [0] = 0f;
+		targetOren [1] = 0f;
+		targetOren [2] = 0f;
+
+		targetScale [0] = 0.472f;
+		targetScale [1] = 0.472f;
+		targetScale [2] = 0.472f;
 	}
 
 	float  oldAngle ;
@@ -94,7 +118,9 @@ public class EventController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.touches.Length >0) {
+		if (Input.touches.Length >0) 
+		
+		{
 			Touch touch = Input.GetTouch(0);
 
 			if(!EventSystem.current.IsPointerOverGameObject (touch.fingerId))
@@ -272,6 +298,8 @@ public class EventController : MonoBehaviour {
 
 		}
 
+
+
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0)){
 			
@@ -335,9 +363,37 @@ public class EventController : MonoBehaviour {
                 }
 			}
 		} 
+		if (selectedGameobject != null) {
+			CheckCorrectness ();
+		}
 	}
 
+	private void CheckCorrectness(){
 
+		float posX = selectedGameobject.transform.position.x;
+		float posY = selectedGameobject.transform.position.y;
+		float posZ = selectedGameobject.transform.position.z;
+
+		float rotX = selectedGameobject.transform.eulerAngles.x;
+		float rotY = selectedGameobject.transform.eulerAngles.y;
+		float rotZ = selectedGameobject.transform.eulerAngles.z;
+
+		float scale = selectedGameobject.transform.localScale.x;
+		//print (posX + posY + posZ);
+
+
+		if(posX <= targetPos[0]+0.05f && posX >= targetPos[0]-0.05f &&
+			posY <= targetPos[1]+0.05f && posY >= targetPos[1]-0.05f &&
+			posZ <= targetPos[2]+0.05f && posZ >= targetPos[2]-0.05f &&
+			rotX <= targetOren[0] + 4.5f && rotX >= targetOren[0] - 4.5f &&
+			rotY <= targetOren[1] + 4.5f && rotY >= targetOren[1] - 4.5f &&
+			rotZ <= targetOren[2] + 4.5f && rotZ>= targetOren[2] - 4.5f &&
+			scale <= targetScale[0] + 0.05f && scale>= targetScale[0] - 0.05f 
+
+		){
+			print("correct");
+		}
+	}
     public void SlidARActive()
     {
         UIs.OnSlidARTouch();

@@ -17,9 +17,9 @@ public class eventcontroller2 : MonoBehaviour {
 	private GameObject selectedGameobject;
 
 	private bool[] input;
-	private float[] targetPos;
-	private float[] targetOren;
-	private float[] targetScale;
+	public float[] targetPos;
+	public float[] targetOren;
+	public float[] targetScale;
 
 	// Use this for initialization
 	void Start () {		
@@ -120,28 +120,28 @@ public class eventcontroller2 : MonoBehaviour {
 				if (state.Equals ("EDIT")) {
 
 					if (input [0]) {
-						SetOrientationX(5);
+						SetOrientationX(1);
 					}
 					else if (input [1]) {
-						SetOrientationX(-5);
+						SetOrientationX(-1);
 					}
 					if (input [2]) {
-						SetOrientationY(5);
+						SetOrientationY(1);
 					}
 					else if (input [3]) {
-						SetOrientationY(-5);
+						SetOrientationY(-1);
 					}
 					if (input [4]) {
-						SetOrientationZ(5);
+						SetOrientationZ(1);
 					}
 					else if (input [5]) {
-						SetOrientationZ(-5);
+						SetOrientationZ(-1);
 					}
 					if (input [6]) {
-						ScaleButton (0.05f);
+						ScaleButton (0.025f);
 					}
 					else if (input [7]) {
-						ScaleButton (-0.05f);
+						ScaleButton (-0.025f);
 					}
 					if (input [8]) {
 						PositionButton (0.025f);
@@ -174,13 +174,13 @@ public class eventcontroller2 : MonoBehaviour {
 		//print (posX + posY + posZ);
 
 
-		if(posX <= targetPos[0]+0.1f && posX >= targetPos[0]-0.1f &&
-			posY <= targetPos[1]+0.1f && posY >= targetPos[1]-0.1f &&
-			posZ <= targetPos[2]+0.1f && posZ >= targetPos[2]-0.1f &&
+		if(posX <= targetPos[0]+0.05f && posX >= targetPos[0]-0.05f &&
+			posY <= targetPos[1]+0.05f && posY >= targetPos[1]-0.05f &&
+			posZ <= targetPos[2]+0.05f && posZ >= targetPos[2]-0.05f &&
 			rotX <= targetOren[0] + 4.5f && rotX >= targetOren[0] - 4.5f &&
 			rotY <= targetOren[1] + 4.5f && rotY >= targetOren[1] - 4.5f &&
 			rotZ <= targetOren[2] + 4.5f && rotZ>= targetOren[2] - 4.5f &&
-			scale <= targetScale[0] + 0.2f && scale>= targetScale[0] - 0.2f 
+			scale <= targetScale[0] + 0.05f && scale>= targetScale[0] - 0.05f 
 		
 		){
 			print("correct");
