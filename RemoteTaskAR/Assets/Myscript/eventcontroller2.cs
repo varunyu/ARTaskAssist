@@ -133,13 +133,16 @@ public class eventcontroller2 : MonoBehaviour {
 					} else if (input [7]) {
 						ScaleButton (-0.025f);
 					}
+					/*
 					if (input [8]) {
 						PositionButton (0.025f);
 					} else if (input [9]) {
 						PositionButton (-0.025f);
 					}
+					*/
 				}
-			} else if (touch.phase == TouchPhase.Moved) {
+			}
+			if (touch.phase == TouchPhase.Moved) {
 				if (state.Equals ("EDIT")) {
 					if (selectedGameobject != null) {
 						if(slidARMode)
