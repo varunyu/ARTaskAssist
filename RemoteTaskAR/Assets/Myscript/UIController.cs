@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour {
 
@@ -99,4 +100,7 @@ public class UIController : MonoBehaviour {
         CArrowPannel.SetActive(false);
         HalfCirclePannel.SetActive(false);
     }
+	public void BackToMenu(){
+		SceneManager.LoadScene ("Main");
+	}
 }

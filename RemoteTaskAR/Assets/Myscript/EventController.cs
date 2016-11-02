@@ -55,15 +55,14 @@ public class EventController : MonoBehaviour {
 	private LineRenderer lr;
 
 	private GameObject selectedGameobject;
-	private GameObject TmpCircleGameobject;
 
 	private Ray ray;
 	private Vector3 grav;
 
 	private float rotaSpeed = 20.0f;
 
-	Vector3 tmpcam2 ;
-	Vector3 tmpAnno2 ;
+	private Vector3 tmpcam2 ;
+	private Vector3 tmpAnno2 ;
 
 	float scHeight;
 	float scWidth;
@@ -91,9 +90,12 @@ public class EventController : MonoBehaviour {
         annoOption = false;
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
-
 		USScrip = (UserStudy)gameObject.GetComponent (typeof(UserStudy));
 
+
+		if (IsUserStudy) {
+			USScrip.StartUserStudy ();
+		}
 	}
 
 	float  oldAngle ;
@@ -365,9 +367,9 @@ public class EventController : MonoBehaviour {
 			+ "\nScale: " + selectedGameobject.transform.localScale.x;
 	}
 	private void CallUserStudyScript(){
-		if(USScrip.CheckCorrectness (selectedGameobject)){
-			print("Finish");
-		}
+		
+		USScrip.CheckCorrectness (selectedGameobject);
+			
 
 	}
     public void SlidARActive()

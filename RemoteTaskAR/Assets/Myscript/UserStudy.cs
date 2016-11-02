@@ -3,9 +3,9 @@ using System.Collections;
 
 public class UserStudy : MonoBehaviour {
 
-	public float[] targetPos;
-	public float[] targetOren;
-	public float targetScale;
+	public float[] targetPos = new float[3];
+	public float[] targetOren = new float[3];
+	public float targetScale= 0f;
 	public GameObject selectedGameobject;
 	private GameObject tmp;
 
@@ -23,16 +23,15 @@ public class UserStudy : MonoBehaviour {
 	// 3 = app2_2
 	public int userStudyScene;
 	// Use this for initialization
+
+
 	void Start () {
 		inputCount = 0;
 		childNum = 3;
 		count = 0;
 
-		targetPos = new float[3];
-		targetOren = new float[3];
-		targetScale = 0f;
 
-		TargetSetUp();
+		//TargetSetUp();
 	}
 	void Update(){
 		if (timerStart) {
@@ -60,19 +59,7 @@ public class UserStudy : MonoBehaviour {
 		if (!IsFinish ()) {
 			GuideLists.transform.GetChild (count).gameObject.SetActive (true);
 			tmp = GuideLists.transform.GetChild (count).gameObject;
-			/*
-		targetPos [0] = 0.150f;
-		targetPos [1] = -0.020f;
-		targetPos [2] = -0.132f;
-
-		targetOren [0] = 0f;
-		targetOren [1] = 0f;
-		targetOren [2] = 0f;
-
-		targetScale [0] = 0.472f;
-		targetScale [1] = 0.472f;
-		targetScale [2] = 0.472f;
-		*/
+		
 			targetPos [0] = tmp.transform.position.x;
 			targetPos [1] = tmp.transform.position.y;
 			targetPos [2] = tmp.transform.position.z;
@@ -88,11 +75,12 @@ public class UserStudy : MonoBehaviour {
 
 
 	}
+	public void StartUserStudy(){
+		SetTimer (true);
+		TargetSetUp ();
+	}
 	public bool IsFinish(){
-		if (count == 0) {
-			SetTimer (true);
-		}
-
+		
 		if (count == childNum) {
 			SetTimer (false);
 			SvaeData ();
@@ -136,9 +124,9 @@ public class UserStudy : MonoBehaviour {
 
 
 	public bool CheckCorrectness(GameObject obj){
-
+		
 		if (!IsFinish ()) {
-
+			
 			selectedGameobject = obj;
 
 			posX = selectedGameobject.transform.position.x;
@@ -165,8 +153,8 @@ public class UserStudy : MonoBehaviour {
 				print (count);
 				GuideLists.transform.GetChild (count).gameObject.SetActive (false);
 				count++;
-				TargetSetUp ();
 
+				TargetSetUp ();
 			}
 
 			return false;

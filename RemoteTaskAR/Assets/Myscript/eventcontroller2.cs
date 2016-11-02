@@ -23,125 +23,150 @@ public class eventcontroller2 : MonoBehaviour {
 
 	private bool[] input;
 
+	/*
+	 * SlidAR
+	 * */
+	float scHeight;
+	float scWidth;
+	private bool slidARMode;
 
 
 	// Use this for initialization
 	void Start () {		
+
+		scHeight = Screen.height;
+		scWidth = Screen.width;
+		slidARMode = false;
+
 		state = "NONE";
 		input = new bool[10];
 
+		lr = gameObject.AddComponent<LineRenderer>();
+		lr.enabled = false;
+
 		USScrip = (UserStudy)gameObject.GetComponent (typeof(UserStudy));
-
+		if (IsUserStudy) {
+			USScrip.StartUserStudy ();
+		}
 	}
-
+	private int counts = 0;
 	// Update is called once per frame
 	void Update () {
 		if (Input.touches.Length >0) {
 			Touch touch = Input.GetTouch(0);
 
-			if(!EventSystem.current.IsPointerOverGameObject (touch.fingerId))
-			{
-				if(touch.phase == TouchPhase.Began) 
-				{
+			if (!EventSystem.current.IsPointerOverGameObject (touch.fingerId)) {
+				if (touch.phase == TouchPhase.Began) {
 
 					ray = Camera.main.ScreenPointToRay (touch.position);
 					Vector3 rayEnd = ray.GetPoint (4);
 
-					if(state.Equals("NONE") || state.Equals ("EDIT"))
-					{
+					if (state.Equals ("NONE") || state.Equals ("EDIT")) {
 						
-						foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) 
-						{
+						foreach (RaycastHit hit  in Physics.RaycastAll(ray)) {
 
-							if(hit.collider.tag.Equals ("annotation"))
-							{
+							if (hit.collider.tag.Equals ("annotation")) {
 								print (hit.transform.name);
 
-								if (selectedGameobject != null)
-								{
-									SelectedAnnotationMat(false);
+								if (selectedGameobject != null) {
+									SelectedAnnotationMat (false);
 								}
 
 								selectedGameobject = hit.transform.gameObject;
-								SelectedAnnotationMat(true);
 								PrepareData ();
+								SelectedAnnotationMat (true);
+
 								break;
 							}
 						}
 					}
-					if (state.Equals("ADDANNO"))
-					{
+					if (state.Equals ("ADDANNO")) {
 
 						GameObject selectPrefab = null;						                         
-						switch (annotationtype)
-						{
+						switch (annotationtype) {
 						case 1:
-							selectPrefab = annoPrefab[0];
+							selectPrefab = annoPrefab [0];
 							break;
 						case 2:
-							selectPrefab = annoPrefab[1];
+							selectPrefab = annoPrefab [1];
 							break;
 						case 3:
-							selectPrefab = annoPrefab[2];
+							selectPrefab = annoPrefab [2];
 							break;
 						case 4:
-							selectPrefab = annoPrefab[3];
+							selectPrefab = annoPrefab [3];
 							break;
 						case 5:
-							selectPrefab = annoPrefab[4];
+							selectPrefab = annoPrefab [4];
 							break;
 						}
 						print (selectPrefab);
-						if (selectPrefab != null){
-							CreateAnnotation(selectPrefab,rayEnd,annotationtype);
+						if (selectPrefab != null) {
+							CreateAnnotation (selectPrefab, rayEnd, annotationtype);
 							annotationtype = 99;
 						}
 
 
 					}
 				}
-			}
-
-			if (touch.phase == TouchPhase.Stationary) {
+			} else if (touch.phase == TouchPhase.Stationary) {
 				
 				if (state.Equals ("EDIT")) {
 
 					if (input [0]) {
-						SetOrientationX(1);
-					}
-					else if (input [1]) {
-						SetOrientationX(-1);
+						SetOrientationX (1);
+					} else if (input [1]) {
+						SetOrientationX (-1);
 					}
 					if (input [2]) {
-						SetOrientationY(1);
-					}
-					else if (input [3]) {
-						SetOrientationY(-1);
+						SetOrientationY (1);
+					} else if (input [3]) {
+						SetOrientationY (-1);
 					}
 					if (input [4]) {
-						SetOrientationZ(1);
-					}
-					else if (input [5]) {
-						SetOrientationZ(-1);
+						SetOrientationZ (1);
+					} else if (input [5]) {
+						SetOrientationZ (-1);
 					}
 					if (input [6]) {
 						ScaleButton (0.025f);
-					}
-					else if (input [7]) {
+					} else if (input [7]) {
 						ScaleButton (-0.025f);
 					}
 					if (input [8]) {
 						PositionButton (0.025f);
+					} else if (input [9]) {
+						PositionButton (-0.025f);
 					}
-					else if (input [9]) {
-						PositionButton(-0.025f);
+				}
+			} else if (touch.phase == TouchPhase.Moved) {
+				if (state.Equals ("EDIT")) {
+					if (selectedGameobject != null) {
+						if(slidARMode)
+						{
+							MoveSlidAR (touch.position);
+						}
 					}
 				}
 			}
 
 
 		}
+		if (state.Equals ("EDIT")) {
 
+			if (selectedGameobject != null) {
+				//PrepareData();
+				if (slidARMode)
+				{
+					counts++;
+					if (counts == 5) {
+						DrawSlidAR();
+						counts = 0;
+					}
+
+				}
+			}
+		} 
 		if (selectedGameobject != null) {
 			if (IsUserStudy) {
 				CallUserStudyScript();
@@ -159,10 +184,9 @@ public class eventcontroller2 : MonoBehaviour {
 			+ "\nScale: " + selectedGameobject.transform.localScale.x;
 	}
 	private void CallUserStudyScript(){
+		
+		USScrip.CheckCorrectness (selectedGameobject);
 
-		if(USScrip.CheckCorrectness (selectedGameobject)){
-			print("Finish");
-		}
 
 	}
 
@@ -192,14 +216,15 @@ public class eventcontroller2 : MonoBehaviour {
 
 	private Vector3 camPos;
 	private Vector3 objPos;
+	private annoScript2 tmp;
 
 	public void PrepareData(){
-		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
 		camPos = tmp.GetInitCam ();
 	}
 	private void SelectedAnnotationMat(bool seleted)
 	{
-		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		//tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
 		if (seleted)
 		{
 			tmp.SelectedAnnotation();
@@ -242,19 +267,260 @@ public class eventcontroller2 : MonoBehaviour {
 		}
 		selectedGameobject.transform.localScale = newScale;
 	}
+
+
 	public void SetOrientationY(float deg){
 
-		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		//tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
 		tmp.SetOrientation(deg,"Y");
 	}
 	public void SetOrientationZ(float deg){
 
-		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		//tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
 		tmp.SetOrientation(deg,"Z");
 	}
 	public void SetOrientationX(float deg){
 
-		annoScript2 tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
+		//tmp = (annoScript2)selectedGameobject.GetComponent(typeof(annoScript2));
 		tmp.SetOrientation(deg,"X");
+	}
+
+
+	/****
+	 * 
+	 * Slid AR
+	 * */
+
+	private Vector3 tmpCamPos ;
+	private Vector3 tmpAnnoPos;
+	public Material lineMat;
+	private LineRenderer lr;
+
+	private Vector3 tmpcam2 ;
+	private Vector3 tmpAnno2 ;
+
+	public void TriggerSlidAR(bool bo){
+		if (bo) {
+			PrepareSlidARData ();
+		} else {
+			destroyLine ();
+		}
+		slidARMode = bo;
+	}
+
+	public void PrepareSlidARData(){
+		print ("prepare");
+		tmp = (annoScript2)selectedGameobject.GetComponent (typeof(annoScript2));
+		tmpCamPos = tmp.GetInitCam ();
+		tmpAnnoPos = tmp.GetPos ();
+
+	}
+
+	private void MoveSlidAR(Vector3 pos){
+		/*
+		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
+		Vector3 camPos = annoScrip.GetInitCamPos ();
+		Vector3 objPos = annoScrip.GetAnnoPos ();
+		*/
+
+		Vector3 intCamToSc = Camera.main.WorldToScreenPoint (tmpCamPos);
+		Vector3 objToSc = Camera.main.WorldToScreenPoint (tmpAnnoPos);
+
+		float m = (intCamToSc.y-objToSc.y)/(intCamToSc.x-objToSc.x);
+		float c = intCamToSc.y - (m*intCamToSc.x);
+
+		float lx = pos.x + (m*pos.x-pos.y+c)/(m*m+1)*m;
+		float ly = pos.y + (m*pos.x-pos.y+c)/(m*m+1); 
+		//print (pos);
+		//print (lx+" : "+ly);
+
+		Vector3 touchPos = new Vector3 (lx,ly,pos.z+1f);
+
+		//Vector3 newPos = new Vector3 (pos.x,(m*pos.x)+c ,1);
+		touchPos = Camera.main.ScreenToWorldPoint (touchPos);
+
+
+
+		Vector3 cCamPos = Camera.main.transform.position;
+		Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
+
+		Vector3 V1 = tmpAnnoPos - tmpCamPos;
+		Vector3 V2 =  touchPos - cCamPos ;
+
+		float[][] input = new float[3][];
+		input[0] = new float[3] { -V1.x, V2.x, tmpCamPos.x - cCamPos.x };
+		input[1] = new float[3] { -V1.y, V2.y, tmpCamPos.y - cCamPos.y };
+		input[2] = new float[3] { -V1.z, V2.z, tmpCamPos.z - cCamPos.z };
+
+		//		print (input[0][0]+":"+input[0][1]+":"+input[0][2]);
+		//		print (input[1][0]+":"+input[1][1]+":"+input[1][2]);
+		//		print (input[2][0]+":"+input[2][1]+":"+input[2][2]);
+
+		float[] result = guassianElim(input);
+		float d = result[0];
+		float t = result[1];
+
+		//print (d+":"+t);
+		//print(tmpCamPos + " : " + d + " : " + rayInit);
+		//print(tmpCamPos + (d*rayInit));
+		selectedGameobject.transform.position = tmpCamPos + (d * V1);
+
+
+	}
+	private void destroyLine(){
+		if (lr.enabled) {
+			lr.enabled = false;
+		}
+	}
+	private void DrawSlidAR(){
+		lr.enabled = true;
+		int count = 2;
+		bool isCamOnSc = false;
+		bool isAnnoOnSc = false;
+		/*
+		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
+		Vector3 tmpCamPos = annoScrip.GetInitCamPos ();
+		Vector3 tmpAnnoPos = annoScrip.GetAnnoPos ();
+		*/
+
+		lr.material = lineMat;
+		lr.SetColors (Color.red,Color.red);
+		lr.SetWidth (0.005f,0.005f);
+
+
+		tmpcam2 = Camera.main.WorldToScreenPoint (tmpCamPos);
+		tmpAnno2 = Camera.main.WorldToScreenPoint (tmpAnnoPos);
+
+		Vector2 camOnScr = new Vector2 (tmpcam2.x,tmpcam2.y); 
+		Vector2 annoOnScr = new Vector2 (tmpAnno2.x,tmpAnno2.y); 
+		Vector2 vCamToAnno = annoOnScr - camOnScr;
+
+		if(camOnScr.x >=0 || camOnScr.x < scWidth)
+		{
+			if(camOnScr.y >=0 || camOnScr.y < scHeight)
+			{
+				//print ("1");
+				isCamOnSc = true;
+				count++;
+			}
+		}
+		if(annoOnScr.x>=0||annoOnScr.x < scWidth)
+		{
+			if(annoOnScr.y >=0 || annoOnScr.y < scHeight)
+			{
+				//print ("2");
+				isAnnoOnSc = true;
+				count++;
+			}
+		}
+
+		lr.SetVertexCount (count);	
+
+		if(!isCamOnSc)
+		{
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+		}
+		else
+		{
+			Vector2 fpoint = camOnScr - (2*vCamToAnno);
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,1)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
+			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+		}
+		if(isAnnoOnSc)
+		{
+			Vector2 lpoint = camOnScr + (2*vCamToAnno);
+			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,1)));
+		}
+
+	}
+	public float[] guassianElim(float[][] rows)
+	{
+		int length = rows[0].Length;
+
+		for (int i = 0; i < rows.Length - 1; i++)
+		{
+			if (rows[i][i] == 0 && !Swap(rows, i, i))
+			{
+				return null;
+			}
+
+			for (int j = i; j < rows.Length; j++)
+			{
+				float[] d = new float[length];
+				for (int x = 0; x < length; x++)
+				{
+					d[x] = rows[j][x];
+					if (rows[j][i] != 0)
+					{
+						d[x] = d[x] / rows[j][i];
+					}
+				}
+				rows[j] = d;
+			}
+
+			for (int y = i + 1; y < rows.Length; y++)
+			{
+				float[] f = new float[length];
+				for (int g = 0; g < length; g++)
+				{
+					f[g] = rows[y][g];
+					if (rows[y][i] != 0)
+					{
+						f[g] = f[g] - rows[i][g];
+					}
+
+				}
+				rows[y] = f;
+			}
+		}
+
+		return CalculateResult(rows);
+	}
+
+	private bool Swap(float[][] rows, int row, int column)
+	{
+		bool swapped = false;
+		for (int z = rows.Length - 1; z > row; z--)
+		{
+			if (rows[z][row] != 0)
+			{
+				float[] temp = new float[rows[0].Length];
+				temp = rows[z];
+				rows[z] = rows[column];
+				rows[column] = temp;
+				swapped = true;
+			}
+		}
+
+		return swapped;
+	}
+
+	private float[] CalculateResult(float[][] rows)
+	{
+		float val = 0;
+		int length = rows[0].Length;
+		float[] result = new float[rows.Length];
+		for (int i = rows.Length - 1; i >= 0; i--)
+		{
+			val = rows[i][length - 1];
+			for (int x = length - 2; x > i - 1; x--)
+			{
+				val -= rows[i][x] * result[x];
+			}
+			result[i] = val / rows[i][i];
+
+			if (!IsValidResult(result[i]))
+			{
+				return null;
+			}
+		}
+		return result;
+	}
+
+	private bool IsValidResult(double result)
+	{
+		return result.ToString() != "NaN" || !result.ToString().Contains("Infinity");
 	}
 }
