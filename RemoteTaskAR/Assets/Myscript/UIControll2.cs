@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIControll2 : MonoBehaviour {
 
@@ -21,5 +22,8 @@ public class UIControll2 : MonoBehaviour {
 	public void ClearAll(){
 		AddPannel.SetActive (false);
 		EditPannel.SetActive (false);
+	}
+	public void BackToMenu(){
+		SceneManager.LoadScene ("Main");
 	}
 }

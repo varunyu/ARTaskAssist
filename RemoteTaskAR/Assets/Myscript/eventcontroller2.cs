@@ -18,8 +18,11 @@ public class eventcontroller2 : MonoBehaviour {
 	private UserStudy USScrip;
 
 	public bool IsUserStudy;
+	public Text debugText;
+
 
 	private bool[] input;
+
 
 
 	// Use this for initialization
@@ -145,10 +148,21 @@ public class eventcontroller2 : MonoBehaviour {
 			}
 		}
 	}
-
+	public void ShowDebugText(){
+		debugText.text = "Position:  X: "+selectedGameobject.transform.position.x+ " Y: "
+			+ selectedGameobject.transform.position.y+ " Z: "
+			+ selectedGameobject.transform.position.z+ ""
+			+ "\nRotation: X "
+			+ selectedGameobject.transform.eulerAngles.x+ " Y: "
+			+ selectedGameobject.transform.eulerAngles.y+ " Z: "
+			+ selectedGameobject.transform.eulerAngles.z+ ""
+			+ "\nScale: " + selectedGameobject.transform.localScale.x;
+	}
 	private void CallUserStudyScript(){
 
-		USScrip.CheckCorrectness (selectedGameobject);	
+		if(USScrip.CheckCorrectness (selectedGameobject)){
+			print("Finish");
+		}
 
 	}
 
