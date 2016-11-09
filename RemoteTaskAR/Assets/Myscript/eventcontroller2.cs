@@ -185,10 +185,10 @@ public class eventcontroller2 : MonoBehaviour {
 				if (slidARMode)
 				{
 					counts++;
-					if (counts == 5) {
+					//if (counts == 0) {
 						DrawSlidAR();
-						counts = 0;
-					}
+					//	counts = 0;
+					//}
 
 				}
 			}
@@ -352,7 +352,7 @@ public class eventcontroller2 : MonoBehaviour {
 	}
 
 	public void PrepareSlidARData(){
-		print ("prepare");
+		//print ("prepare");
 		tmp = (annoScript2)selectedGameobject.GetComponent (typeof(annoScript2));
 		tmpCamPos = tmp.GetInitCam ();
 		tmpAnnoPos = tmp.GetPos ();

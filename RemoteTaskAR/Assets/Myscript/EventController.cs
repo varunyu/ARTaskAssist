@@ -342,10 +342,10 @@ public class EventController : MonoBehaviour {
                 if (slidARMode)
                 {
 					counts++;
-					if (counts == 5) {
+					//if (counts == 5) {
 						DrawSlidAR();
-						counts = 0;
-					}
+					//	counts = 0;
+					//}
 
                 }
 			}
@@ -564,6 +564,7 @@ public class EventController : MonoBehaviour {
 		Vector2 annoOnScr = new Vector2 (tmpAnno2.x,tmpAnno2.y); 
 		Vector2 vCamToAnno = annoOnScr - camOnScr;
 
+		print ("cam on Screen " + camOnScr.x + " " + camOnScr.y); 
 		if(camOnScr.x >=0 || camOnScr.x < scWidth)
 		{
 			if(camOnScr.y >=0 || camOnScr.y < scHeight)

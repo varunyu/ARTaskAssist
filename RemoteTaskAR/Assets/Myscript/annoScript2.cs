@@ -8,13 +8,15 @@ public class annoScript2 : MonoBehaviour {
 	public Material mat2;
 	public Vector3 initCam;
 
+	private GameObject axisObject;
 	// Use this for initialization
 
 	private Vector3 initPos;
 
+
 	void Start () {
 		initPos = gameObject.transform.position;
-
+		axisObject = gameObject.transform.GetChild (0).gameObject;
 	}
 	
 	// Update is called once per frame
@@ -25,21 +27,23 @@ public class annoScript2 : MonoBehaviour {
 	public void SelectedAnnotation()
 	{
 		ChangeMatColor(mat2);
+		axisObject.SetActive (true);
 	}
 	public void DeselectedAnnotatin()
 	{
 		ChangeMatColor(mat1);
+		axisObject.SetActive (false);
 	}
 	private void ChangeMatColor(Material mat)
 	{
 		if (annotype >= 3)
 		{
-			Transform c = gameObject.transform.GetChild(0).gameObject.transform.GetChild(0);
+			Transform c = gameObject.transform.GetChild(1).gameObject.transform.GetChild(0);
 			c.GetComponent<MeshRenderer>().material = mat;
 		}
 		else
 		{
-			Transform c = gameObject.transform.GetChild(0);
+			Transform c = gameObject.transform.GetChild(1);
 			c.GetComponent<MeshRenderer>().material = mat;
 		}
 
