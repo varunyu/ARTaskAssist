@@ -107,7 +107,9 @@ namespace Vuforia
             }
 
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
-            MarkerPannel.SetActive(true);
+			if (MarkerPannel != null) {
+				MarkerPannel.SetActive (true);
+			}
         }
 
         #endregion // PRIVATE_METHODS

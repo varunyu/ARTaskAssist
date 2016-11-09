@@ -30,6 +30,11 @@ public class eventcontroller2 : MonoBehaviour {
 	float scWidth;
 	private bool slidARMode;
 
+	/*
+	 * Scale mode
+	 * */
+
+	private bool scaleMode;
 
 	// Use this for initialization
 	void Start () {		
@@ -145,11 +150,29 @@ public class eventcontroller2 : MonoBehaviour {
 			if (touch.phase == TouchPhase.Moved) {
 				if (state.Equals ("EDIT")) {
 					if (selectedGameobject != null) {
-						if(slidARMode)
-						{
+						if (slidARMode) {
+							
 							MoveSlidAR (touch.position);
+
+						} else if (scaleMode) {
+							
+							if (Input.touchCount >= 2) {
+								
+								Vector2 t1PrevPos = touch.position - touch.deltaPosition;
+								Vector2 t2PrevPos = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
+
+								float prevMagnitude = (t1PrevPos - t2PrevPos).magnitude;
+								float cMagnitude = (touch.position - Input.GetTouch(1).position).magnitude;
+
+								float diffMagnitude = (prevMagnitude - cMagnitude)*0.01f;
+
+								ScaleButton (-diffMagnitude);
+							}
+
 						}
 					}
+
+
 				}
 			}
 
@@ -171,9 +194,11 @@ public class eventcontroller2 : MonoBehaviour {
 			}
 		} 
 		if (selectedGameobject != null) {
+			
 			if (IsUserStudy) {
 				CallUserStudyScript();
 			}
+
 		}
 	}
 	public void ShowDebugText(){
@@ -184,7 +209,7 @@ public class eventcontroller2 : MonoBehaviour {
 			+ selectedGameobject.transform.eulerAngles.x+ " Y: "
 			+ selectedGameobject.transform.eulerAngles.y+ " Z: "
 			+ selectedGameobject.transform.eulerAngles.z+ ""
-			+ "\nScale: " + selectedGameobject.transform.localScale.x;
+			+ "\nScale: " + selectedGameobject.transform.localScale.x+"\n";
 	}
 	private void CallUserStudyScript(){
 		
@@ -261,14 +286,20 @@ public class eventcontroller2 : MonoBehaviour {
 
 	}
 	public void ScaleButton(float d){
+		/*
 		float tmpscale = selectedGameobject.transform.localScale.x+d;
+
 		Vector3 newScale = new Vector3 (tmpscale,tmpscale,tmpscale);
+		*/
+		Vector3 newScale = new Vector3 (d,d,d);
+		/*
 		if (newScale.x <= 0 || newScale.y <= 0 || newScale.z <= 0) {
 			newScale.x = 0.1f;
 			newScale.y = 0.1f;
 			newScale.z = 0.1f;
 		}
-		selectedGameobject.transform.localScale = newScale;
+		*/
+		selectedGameobject.transform.localScale += newScale;
 	}
 
 
@@ -288,6 +319,12 @@ public class eventcontroller2 : MonoBehaviour {
 		tmp.SetOrientation(deg,"X");
 	}
 
+	public void TriggerScale(bool bo){
+		if (slidARMode) {
+			TriggerSlidAR (false);
+		} 
+		scaleMode = bo;
+	}
 
 	/****
 	 * 
@@ -303,6 +340,9 @@ public class eventcontroller2 : MonoBehaviour {
 	private Vector3 tmpAnno2 ;
 
 	public void TriggerSlidAR(bool bo){
+		if (scaleMode) {
+			TriggerScale (false);
+		}
 		if (bo) {
 			PrepareSlidARData ();
 		} else {
@@ -345,7 +385,7 @@ public class eventcontroller2 : MonoBehaviour {
 
 
 		Vector3 cCamPos = Camera.main.transform.position;
-		Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
+		//Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
 
 		Vector3 V1 = tmpAnnoPos - tmpCamPos;
 		Vector3 V2 =  touchPos - cCamPos ;
@@ -361,7 +401,7 @@ public class eventcontroller2 : MonoBehaviour {
 
 		float[] result = guassianElim(input);
 		float d = result[0];
-		float t = result[1];
+		//float t = result[1];
 
 		//print (d+":"+t);
 		//print(tmpCamPos + " : " + d + " : " + rayInit);

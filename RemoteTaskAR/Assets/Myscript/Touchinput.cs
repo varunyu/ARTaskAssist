@@ -6,7 +6,7 @@ public class Touchinput : MonoBehaviour {
 
 
 	public GameObject Prefab;
-	private Camera camera;
+	//private Camera camera;
 	private AnnotationScript annoScrip;
 
 	// Use this for initialization

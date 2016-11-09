@@ -123,7 +123,7 @@ public class UserStudy : MonoBehaviour {
 
 
 
-	public bool CheckCorrectness(GameObject obj){
+	public void CheckCorrectness(GameObject obj){
 		
 		if (!IsFinish ()) {
 			
@@ -157,11 +157,8 @@ public class UserStudy : MonoBehaviour {
 				TargetSetUp ();
 			}
 
-			return false;
 
-		} else {
-			return true;
-		}
+		} 
 
 
 	}

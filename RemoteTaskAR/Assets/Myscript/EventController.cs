@@ -90,16 +90,15 @@ public class EventController : MonoBehaviour {
         annoOption = false;
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
+
 		USScrip = (UserStudy)gameObject.GetComponent (typeof(UserStudy));
-
-
-		if (IsUserStudy) {
+		if (IsUserStudy) {			
 			USScrip.StartUserStudy ();
 		}
 	}
-
+	/*
 	float  oldAngle ;
-	float  newAngle ;
+	float  newAngle ;*/
 	int counts =0;
 	// Update is called once per frame
 	void Update () {
@@ -125,7 +124,7 @@ public class EventController : MonoBehaviour {
 
 								if(hit.collider.tag.Equals ("annotation"))
 								{
-									print (hit.transform.name);
+									//print (hit.transform.name);
 
 									if (selectedGameobject != null)
 									{
@@ -217,15 +216,16 @@ public class EventController : MonoBehaviour {
                     }
 					if(state.Equals("EDIT"))
 					{
+						/*
 						if(rotateMode)
 						{
 							if(Input.touchCount >=2)
 							{
-								print ("Touch Count = "+Input.touchCount);
+								//print ("Touch Count = "+Input.touchCount);
 								Vector2 cVector = touch.position - Input.GetTouch(1).position;
 								oldAngle = Mathf.Atan2(cVector.y,cVector.x);
 							}
-						}
+						}*/
 					}
 
                     
@@ -249,7 +249,7 @@ public class EventController : MonoBehaviour {
 							{
 								if(Input.touchCount == 1)
 								{
-									print (touch.deltaPosition);
+									//print (touch.deltaPosition);
 									if(Mathf.Abs(touch.deltaPosition.x) > Mathf.Abs(touch.deltaPosition.y))
 									{
 
@@ -270,7 +270,7 @@ public class EventController : MonoBehaviour {
 
 									float diffMagnitude = (prevMagnitude - cMagnitude)*0.01f;
 
-									print (-diffMagnitude);
+									//print (-diffMagnitude);
 									SetObjectScale(-diffMagnitude);
 								}
 							}
@@ -285,7 +285,7 @@ public class EventController : MonoBehaviour {
 		}
 
 
-
+/*
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0)){
 			
@@ -301,7 +301,7 @@ public class EventController : MonoBehaviour {
 
 						if(hit.collider.tag.Equals ("annotation"))
 						{
-							print (hit.transform.name);
+							//print (hit.transform.name);
 							selectedGameobject = hit.transform.gameObject;
 							
 							break;
@@ -334,6 +334,7 @@ public class EventController : MonoBehaviour {
 		}
 		
 #endif
+*/
 		if (state.Equals ("EDIT")) {
 
 			if (selectedGameobject != null) {
@@ -364,7 +365,7 @@ public class EventController : MonoBehaviour {
 			+ selectedGameobject.transform.eulerAngles.x+ " Y: "
 			+ selectedGameobject.transform.eulerAngles.y+ " Z: "
 			+ selectedGameobject.transform.eulerAngles.z+ ""
-			+ "\nScale: " + selectedGameobject.transform.localScale.x;
+			+ " \nScale: " + selectedGameobject.transform.localScale.x + "\n";
 	}
 	private void CallUserStudyScript(){
 		
@@ -509,7 +510,7 @@ public class EventController : MonoBehaviour {
 
 
 		Vector3 cCamPos = Camera.main.transform.position;
-		Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
+		//Ray ray2 = Camera.main.ScreenPointToRay (touchPos);
 
 		Vector3 V1 = tmpAnnoPos - tmpCamPos;
 		Vector3 V2 =  touchPos - cCamPos ;
@@ -525,7 +526,7 @@ public class EventController : MonoBehaviour {
 
         float[] result = guassianElim(input);
         float d = result[0];
-        float t = result[1];
+        //float t = result[1];
 
 		//print (d+":"+t);
         //print(tmpCamPos + " : " + d + " : " + rayInit);
