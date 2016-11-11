@@ -64,7 +64,7 @@ public class eventcontroller2 : MonoBehaviour {
 				if (touch.phase == TouchPhase.Began) {
 
 					ray = Camera.main.ScreenPointToRay (touch.position);
-					Vector3 rayEnd = ray.GetPoint (4);
+					Vector3 rayEnd = ray.GetPoint (28);
 
 					if (state.Equals ("NONE") || state.Equals ("EDIT")) {
 						
@@ -260,6 +260,11 @@ public class eventcontroller2 : MonoBehaviour {
 		else
 		{
 			tmp.DeselectedAnnotatin();
+		}
+	}
+	public void DoneButton(){
+		if (selectedGameobject != null) {
+			SelectedAnnotationMat (false);
 		}
 	}
 	public void RemoveSelectedAnno(){

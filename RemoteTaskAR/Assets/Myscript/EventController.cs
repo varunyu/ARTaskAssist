@@ -114,7 +114,7 @@ public class EventController : MonoBehaviour {
 				{
 
 					ray = Camera.main.ScreenPointToRay (touch.position);
-					Vector3 rayEnd = ray.GetPoint (4);
+					Vector3 rayEnd = ray.GetPoint (28);
 
 					if(state.Equals("NONE") || state.Equals ("EDIT"))
 					{
@@ -406,6 +406,10 @@ public class EventController : MonoBehaviour {
         rotateMode = false;
         destroyLine ();
         state = "NONE";
+
+		if (selectedGameobject != null) {
+			SelectedAnnotationMat (false);
+		}
     } 
    
     public void SetAnno(int type)
@@ -564,7 +568,7 @@ public class EventController : MonoBehaviour {
 		Vector2 annoOnScr = new Vector2 (tmpAnno2.x,tmpAnno2.y); 
 		Vector2 vCamToAnno = annoOnScr - camOnScr;
 
-		print ("cam on Screen " + camOnScr.x + " " + camOnScr.y); 
+
 		if(camOnScr.x >=0 || camOnScr.x < scWidth)
 		{
 			if(camOnScr.y >=0 || camOnScr.y < scHeight)
@@ -605,7 +609,6 @@ public class EventController : MonoBehaviour {
 		}
 
 	}
-
 
 	public void RemoveSelectedAnno(){
 		

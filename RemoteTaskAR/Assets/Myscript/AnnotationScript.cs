@@ -16,8 +16,8 @@ public class AnnotationScript : MonoBehaviour {
     public Material mat1;
     public Material mat2;
 
-	private GameObject Axis;
-	private bool haveAxis;
+	public GameObject Axis;
+
     /*
 	private float objScale = 1.0f;
 	private Vector3 initScale;
@@ -27,7 +27,7 @@ public class AnnotationScript : MonoBehaviour {
 	void Start () {
 		gravity = Input.gyro.gravity;
 		//initScale = new Vector3 (1, 1, 1);
-		haveAxis = false;
+
 		SetRotation ();
 	}
 
@@ -126,16 +126,16 @@ public class AnnotationScript : MonoBehaviour {
 
     public void SelectedAnnotation()
     {
-		if (haveAxis) {
-			Axis.SetActive (true);
-		}
+		
+		Axis.SetActive (true);
+
         ChangeMatColor(mat2);
     }
     public void DeselectedAnnotatin()
     {
-		if (haveAxis) {
-			Axis.SetActive (false);
-		}
+		
+		Axis.SetActive (false);
+
         ChangeMatColor(mat1);
     }
     private void ChangeMatColor(Material mat)
@@ -156,10 +156,8 @@ public class AnnotationScript : MonoBehaviour {
     public void SetAnnoType(int t)
     {
         annotype = t;
-		if (t > 14) {
-			Axis = gameObject.transform.GetChild (1).gameObject;
-			haveAxis = true;
-		}
+		Axis = gameObject.transform.GetChild (1).gameObject;
+
     }
     
 }

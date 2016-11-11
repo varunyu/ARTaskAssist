@@ -132,7 +132,7 @@ MeshRenderer:
   m_GameObject: {fileID: 141042}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_Materials:
   - {fileID: 2100000, guid: 9d728a3159bc84879b2de858996fa3f4, type: 2}
   m_SubsetIndices: 
@@ -158,7 +158,7 @@ MeshRenderer:
   m_GameObject: {fileID: 115368}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_Materials:
   - {fileID: 2100000, guid: 0c83aed053f5142e7bf02ec45d9a7a6c, type: 2}
   m_SubsetIndices: 
@@ -184,7 +184,7 @@ MeshRenderer:
   m_GameObject: {fileID: 147582}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_Materials:
   - {fileID: 2100000, guid: b236f0ceb2df843608d602c15fc97ae4, type: 2}
   m_SubsetIndices: 

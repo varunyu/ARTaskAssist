@@ -7,12 +7,11 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: noMat
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON
+  m_Shader: {fileID: 4800000, guid: 5f9abd94e2da44c96b970ae1ebdef560, type: 3}
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -22,7 +21,7 @@ Material:
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
+          m_Offset: {x: 1, y: 1}
       data:
         first:
           name: _BumpMap
@@ -79,6 +78,55 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecGlossMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _DetailTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _NormalDepth
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecGloss
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _AmbientOcclusion
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _EmissiveColour
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -87,11 +135,19 @@ Material:
       data:
         first:
           name: _DstBlend
-        second: 10
+        second: 0
       data:
         first:
           name: _Cutoff
-        second: 0.5
+        second: 0.392
+      data:
+        first:
+          name: _Shininess
+        second: 1
+      data:
+        first:
+          name: _WindQuality
+        second: 0
       data:
         first:
           name: _Parallax
@@ -99,7 +155,7 @@ Material:
       data:
         first:
           name: _ZWrite
-        second: 0
+        second: 1
       data:
         first:
           name: _Glossiness
@@ -123,11 +179,63 @@ Material:
       data:
         first:
           name: _Mode
-        second: 3
+        second: 0
       data:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _ShadowIntensity
+        second: 1
+      data:
+        first:
+          name: _ShadowStrength
+        second: 1
+      data:
+        first:
+          name: _Cull
+        second: 2
+      data:
+        first:
+          name: _ShadowInt
+        second: 1
+      data:
+        first:
+          name: _SpecExponent
+        second: 10
+      data:
+        first:
+          name: _SpecStrength
+        second: 1
+      data:
+        first:
+          name: _AmplifyDepth
+        second: 0
+      data:
+        first:
+          name: _CelShadingLevels
+        second: 0
+      data:
+        first:
+          name: _LightWrap
+        second: 0
+      data:
+        first:
+          name: _AmbientOcclusionStrength
+        second: 0
+      data:
+        first:
+          name: _EmissiveStrength
+        second: 0
+      data:
+        first:
+          name: _AttenuationMultiplier
+        second: 1
+      data:
+        first:
+          name: _SpotlightHardness
+        second: 2
     m_Colors:
       data:
         first:
@@ -137,3 +245,27 @@ Material:
         first:
           name: _Color
         second: {r: 1, g: 1, b: 1, a: 0}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+      data:
+        first:
+          name: _ShadowColor
+        second: {r: 1, g: 1, b: 1, a: 0}
+      data:
+        first:
+          name: _HueVariation
+        second: {r: 1, g: 0.5, b: 0, a: 0.1}
+      data:
+        first:
+          name: _TextureRes
+        second: {r: 256, g: 256, b: 0, a: 0}
+      data:
+        first:
+          name: _AboveAmbientColour
+        second: {r: 0.3, g: 0.3, b: 0.3, a: 0.3}
+      data:
+        first:
+          name: _BelowAmbientColour
+        second: {r: 0.1, g: 0.1, b: 0.1, a: 0.1}
