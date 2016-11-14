@@ -542,6 +542,7 @@ public class EventController : MonoBehaviour {
 
 	private void destroyLine(){
 		if (lr.enabled) {
+			
 			lr.enabled = false;
 		}
 	}
@@ -568,7 +569,7 @@ public class EventController : MonoBehaviour {
 		Vector2 annoOnScr = new Vector2 (tmpAnno2.x,tmpAnno2.y); 
 		Vector2 vCamToAnno = annoOnScr - camOnScr;
 
-
+		//print (camOnScr + " : " + annoOnScr);
 		if(camOnScr.x >=0 || camOnScr.x < scWidth)
 		{
 			if(camOnScr.y >=0 || camOnScr.y < scHeight)
@@ -592,26 +593,26 @@ public class EventController : MonoBehaviour {
 
 		if(!isCamOnSc)
 		{
-			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
-			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,0.5f)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,0.5f)));
 		}
 		else
 		{
 			Vector2 fpoint = camOnScr - (2*vCamToAnno);
-			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,1)));
-			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
-			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,0.5f)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,0.5f)));
+			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,0.5f)));
 		}
 		if(isAnnoOnSc)
 		{
 			Vector2 lpoint = camOnScr + (2*vCamToAnno);
-			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,1)));
+			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,0.5f)));
 		}
 
 	}
 
 	public void RemoveSelectedAnno(){
-		
+		destroyLine ();
 		if (selectedGameobject != null) {
 			Destroy (selectedGameobject);
 			selectedGameobject = null;

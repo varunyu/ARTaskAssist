@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class UserStudy : MonoBehaviour {
 
@@ -24,10 +25,15 @@ public class UserStudy : MonoBehaviour {
 	public int userStudyScene;
 	// Use this for initialization
 
+	public bool isGravAR;
+	public Text debugText;
+
+	private Quaternion Q1;
+	private Quaternion Q2;
 
 	void Start () {
 		inputCount = 0;
-		childNum = 3;
+		childNum = 5;
 		count = 0;
 
 
@@ -68,6 +74,8 @@ public class UserStudy : MonoBehaviour {
 			targetOren [1] = tmp.transform.eulerAngles.y;
 			targetOren [2] = tmp.transform.eulerAngles.z;
 
+			Q1 = tmp.transform.rotation;
+
 			targetScale = tmp.transform.localScale.x;
 		}
 
@@ -77,13 +85,18 @@ public class UserStudy : MonoBehaviour {
 	}
 	public void StartUserStudy(){
 		SetTimer (true);
+		ShowProgress ();
 		TargetSetUp ();
+	}
+	private void ShowProgress(){
+		debugText.text = count + " / " + childNum;
 	}
 	public bool IsFinish(){
 		
 		if (count == childNum) {
 			SetTimer (false);
 			SvaeData ();
+			print ("Finish");
 			return true;
 		}
 		return false;
@@ -114,15 +127,19 @@ public class UserStudy : MonoBehaviour {
 	private float posX ;
 	private float posY ;
 	private float posZ ;
-
+	/*
 	private float rotX ;
 	private float rotY ;
 	private float rotZ ;
-
+*/
 	private float scale;
 
-
-
+	private float angle;
+	private float mAngle = 10f;
+	/*
+	 * Check correctness
+	 * too Hard code need to redesign ASAP
+	 * */
 	public void CheckCorrectness(GameObject obj){
 		
 		if (!IsFinish ()) {
@@ -132,35 +149,71 @@ public class UserStudy : MonoBehaviour {
 			posX = selectedGameobject.transform.position.x;
 			posY = selectedGameobject.transform.position.y;
 			posZ = selectedGameobject.transform.position.z;
-
+			/*
 			rotX = selectedGameobject.transform.eulerAngles.x;
 			rotY = selectedGameobject.transform.eulerAngles.y;
 			rotZ = selectedGameobject.transform.eulerAngles.z;
-
+*/
+			Q2 = selectedGameobject.transform.rotation;
+				
 			scale = selectedGameobject.transform.localScale.x;
 			//print (posX + posY + posZ);
+			/*
+			print(posX+ " "+posY+ " "+posZ);
+			print (rotX + " " + rotY + " " + rotZ);
+			print (scale);
+*/
+			if (posX <= targetPos [0] + 0.8f && posX >= targetPos [0] - 0.8f &&
+			    posY <= targetPos [1] + 0.8f && posY >= targetPos [1] - 0.8f &&
+			    posZ <= targetPos [2] + 0.8f && posZ >= targetPos [2] - 0.8f &&			    
+			    scale <= targetScale + 0.07f && scale >= targetScale - 0.07f) {
 
+				angle = Quaternion.Angle (Q1,Q2);
 
-			if (posX <= targetPos [0] + 0.05f && posX >= targetPos [0] - 0.05f &&
-			    posY <= targetPos [1] + 0.05f && posY >= targetPos [1] - 0.05f &&
-			    posZ <= targetPos [2] + 0.05f && posZ >= targetPos [2] - 0.05f &&
-			    rotX <= targetOren [0] + 4.5f && rotX >= targetOren [0] - 4.5f &&
-			    rotY <= targetOren [1] + 4.5f && rotY >= targetOren [1] - 4.5f &&
-			    rotZ <= targetOren [2] + 4.5f && rotZ >= targetOren [2] - 4.5f &&
-			    scale <= targetScale + 0.05f && scale >= targetScale - 0.05f) {
-				print ("correct");
+				if (angle <= mAngle) {
+					Correct ();
+				}
 
-				print (count);
-				GuideLists.transform.GetChild (count).gameObject.SetActive (false);
-				count++;
+				/*
+				if (isGravAR) {
 
-				TargetSetUp ();
+					if (count == 1 || count ==4) {
+						if(rotY <= targetOren [1] + 5f && rotY >= targetOren [1] - 5f ){
+							Correct ();
+						}
+					} else if (count == 3) {
+						if(rotZ <= targetOren [1] + 5f && rotZ >= targetOren [1] - 5f ){
+							Correct ();
+						}
+					}else {
+						Correct ();
+					}
+
+					
+				} else if(rotX <= targetOren [0] + 5f && rotX >= targetOren [0] - 5f &&
+					rotY <= targetOren [1] + 5f && rotY >= targetOren [1] - 5f &&
+					rotZ <= targetOren [2] + 5f && rotZ >= targetOren [2] - 5f){
+
+					Correct ();
+				}
+*/
+
+			} else {
+				
 			}
-
 
 		} 
 
 
+	}
+
+	public void Correct(){
+		if (!IsFinish()) {
+			GuideLists.transform.GetChild (count).gameObject.SetActive (false);
+			count++;
+			ShowProgress ();
+			TargetSetUp ();
+		}
 	}
 
 }

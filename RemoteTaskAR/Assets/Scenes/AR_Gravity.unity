@@ -919,6 +919,7 @@ MonoBehaviour:
   childNum: 0
   count: 0
   userStudyScene: 0
+  debugText: {fileID: 727459758}
 --- !u!21 &824665093
 Material:
   serializedVersion: 6
@@ -2406,6 +2407,10 @@ Prefab:
     - target: {fileID: 11480016, guid: 3a10a4cb49e914e06b9ec14eed390add, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowDebugText
+      objectReference: {fileID: 0}
+    - target: {fileID: 147688, guid: 3a10a4cb49e914e06b9ec14eed390add, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3a10a4cb49e914e06b9ec14eed390add, type: 2}

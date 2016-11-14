@@ -55,6 +55,7 @@ public class eventcontroller2 : MonoBehaviour {
 		}
 	}
 	private int counts = 0;
+	private float fixDeg = 2.5f;
 	// Update is called once per frame
 	void Update () {
 		if (Input.touches.Length >0) {
@@ -119,19 +120,19 @@ public class eventcontroller2 : MonoBehaviour {
 				if (state.Equals ("EDIT")) {
 
 					if (input [0]) {
-						SetOrientationX (1);
+						SetOrientationX (fixDeg);
 					} else if (input [1]) {
-						SetOrientationX (-1);
+						SetOrientationX (-fixDeg);
 					}
 					if (input [2]) {
-						SetOrientationY (1);
+						SetOrientationY (fixDeg);
 					} else if (input [3]) {
-						SetOrientationY (-1);
+						SetOrientationY (-fixDeg);
 					}
 					if (input [4]) {
-						SetOrientationZ (1);
+						SetOrientationZ (fixDeg);
 					} else if (input [5]) {
-						SetOrientationZ (-1);
+						SetOrientationZ (-fixDeg);
 					}
 					if (input [6]) {
 						ScaleButton (0.025f);
@@ -268,7 +269,7 @@ public class eventcontroller2 : MonoBehaviour {
 		}
 	}
 	public void RemoveSelectedAnno(){
-
+		destroyLine ();
 		if (selectedGameobject != null) {
 			Destroy (selectedGameobject);
 			selectedGameobject = null;
@@ -358,9 +359,12 @@ public class eventcontroller2 : MonoBehaviour {
 
 	public void PrepareSlidARData(){
 		//print ("prepare");
-		tmp = (annoScript2)selectedGameobject.GetComponent (typeof(annoScript2));
-		tmpCamPos = tmp.GetInitCam ();
-		tmpAnnoPos = tmp.GetPos ();
+		if(tmp!= null){
+			tmp = (annoScript2)selectedGameobject.GetComponent (typeof(annoScript2));
+			tmpCamPos = tmp.GetInitCam ();
+			tmpAnnoPos = tmp.GetPos ();
+		}
+
 
 	}
 
@@ -466,20 +470,20 @@ public class eventcontroller2 : MonoBehaviour {
 
 		if(!isCamOnSc)
 		{
-			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
-			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,0.5f)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,0.5f)));
 		}
 		else
 		{
 			Vector2 fpoint = camOnScr - (2*vCamToAnno);
-			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,1)));
-			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1)));
-			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1)));
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,0.5f)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,0.5f)));
+			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,0.5f)));
 		}
 		if(isAnnoOnSc)
 		{
 			Vector2 lpoint = camOnScr + (2*vCamToAnno);
-			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,1)));
+			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,0.5f)));
 		}
 
 	}
