@@ -22,28 +22,38 @@ public class MainController : MonoBehaviour {
 	public void GotoScenes(int i){
 		switch (i) {
 		case 1:
+			PlayerPrefs.SetInt ("STAGE", 0);
 			SceneManager.LoadScene ("AR_Normal");
 			break;
 		case 2:
 			SceneManager.LoadScene ("Tutorial_Normal");
 			break;
 		case 3:
-			SceneManager.LoadScene ("EasyTask_Normal");
+			PlayerPrefs.SetInt ("STAGE", 1);
+			SceneManager.LoadScene ("AR_Normal");
+			//SceneManager.LoadScene ("EasyTask_Normal");
 			break;
 		case 4:
-			SceneManager.LoadScene ("HardTask_Normal");
+			PlayerPrefs.SetInt ("STAGE", 2);
+			SceneManager.LoadScene ("AR_Normal");
+			//SceneManager.LoadScene ("HardTask_Normal");
 			break;
 		case 5:
+			PlayerPrefs.SetInt ("STAGE", 3);
 			SceneManager.LoadScene ("AR_Gravity");
 			break;
 		case 6:
 			SceneManager.LoadScene ("Tutorial_Grav");
 			break;
 		case 7:
-			SceneManager.LoadScene ("EasyTask_Grav");
+			PlayerPrefs.SetInt ("STAGE", 4);
+			SceneManager.LoadScene ("AR_Gravity");
+			//SceneManager.LoadScene ("EasyTask_Grav");
 			break;
 		case 8:
-			SceneManager.LoadScene ("HardTask_Grav");
+			PlayerPrefs.SetInt ("STAGE", 5);
+			SceneManager.LoadScene ("AR_Gravity");
+			//SceneManager.LoadScene ("HardTask_Grav");
 			break;
 		}
 	}
@@ -55,6 +65,10 @@ public class MainController : MonoBehaviour {
 	float time1_2;
 	float time2_2;
 	float time2_1;
+	float TimeSLIDAR1_1;
+	float TimeSLIDAR1_2;
+	float TimeSLIDAR2_2;
+	float TimeSLIDAR2_1;
 	int input1_1;
 	int input1_2;
 	int input2_1;
@@ -64,28 +78,40 @@ public class MainController : MonoBehaviour {
 		
 		if (PlayerPrefs.HasKey ("TimeApp1_1")) {
 			time1_1 = PlayerPrefs.GetFloat ("TimeApp1_1");
+			TimeSLIDAR1_1 = PlayerPrefs.GetFloat("TimeSLIDAR1_1");
 		} else {
-			time1_1 = 0f;
+			time1_1 = 0f ;
+			TimeSLIDAR1_1 = 0f;
 		}
-		timeList [0].text = time1_1.ToString();
+		timeList [0].text = time1_1.ToString () + "  :   " + TimeSLIDAR1_1.ToString ();
+
 		if (PlayerPrefs.HasKey ("TimeApp1_2")) {
 			time1_2 = PlayerPrefs.GetFloat ("TimeApp1_2");
+			TimeSLIDAR1_2 = PlayerPrefs.GetFloat ("TimeSLIDAR1_2");
 		} else {
 			time1_2 = 0f;
+			TimeSLIDAR1_2 = 0f;
 		}
-		timeList [1].text = time1_2.ToString();
+		timeList [1].text = time1_2.ToString() + "  :   " + TimeSLIDAR1_2.ToString ();
+
 		if (PlayerPrefs.HasKey ("TimeApp2_1")) {
 			time2_1 = PlayerPrefs.GetFloat ("TimeApp2_1");
+			TimeSLIDAR2_1 = PlayerPrefs.GetFloat("TimeSLIDAR2_1");
 		} else {
 			time2_1 = 0f;
+			TimeSLIDAR2_1 = 0f;
 		}
-		timeList [2].text = time2_1.ToString();
+		timeList [2].text = time2_1.ToString() + "  :   " + TimeSLIDAR2_1.ToString ();
+
 		if (PlayerPrefs.HasKey ("TimeApp2_2")) {
 			time2_2 = PlayerPrefs.GetFloat ("TimeApp2_2");
+			TimeSLIDAR2_2 = PlayerPrefs.GetFloat("TimeSLIDAR2_2");
 		} else {
 			time2_2 = 0f;
+			TimeSLIDAR2_2 = 0f;
 		}
-		timeList [3].text = time2_2.ToString ();
+		timeList [3].text = time2_2.ToString ()+ "  :   " + TimeSLIDAR2_2.ToString ();
+
 		/////////////////////////////////////////
 		if (PlayerPrefs.HasKey ("InputApp1_1")) {
 			input1_1 = PlayerPrefs.GetInt ("InputApp1_1");

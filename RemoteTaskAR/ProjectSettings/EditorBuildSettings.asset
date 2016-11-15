@@ -15,11 +15,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Tutorial_Normal.unity
   - enabled: 0
     path: Assets/Scenes/Tutorial_Grav.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EasyTask_Grav.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EasyTask_Normal.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HardTask_Grav.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HardTask_Normal.unity

@@ -76,6 +76,9 @@ public class AnnotationScript : MonoBehaviour {
 		initCamPos = pos;
 		initPos = gameObject.transform.position;
 	}
+	public void SetPos(Vector3 p){
+		initPos = p;
+	}
 
 	public Vector3 GetAnnoPos(){
 		return initPos;
@@ -83,9 +86,7 @@ public class AnnotationScript : MonoBehaviour {
 	public Vector3 GetInitCamPos(){
 		return initCamPos;
 	}
-	public void SetPos(Vector3 currentPos){
-		gameObject.transform.position = currentPos;
-	}
+
 	public void SetOrientation(float deg,string Axis){
 		if (parallel) {
 			if(Axis.Equals("X"))

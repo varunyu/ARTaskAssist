@@ -10,7 +10,11 @@ public class UserStudy : MonoBehaviour {
 	public GameObject selectedGameobject;
 	private GameObject tmp;
 
-	public GameObject GuideLists;
+	private GameObject GuideLists;
+
+	public GameObject list1;
+	public GameObject list2;
+
 	public int childNum;
 	public int count;
 
@@ -25,25 +29,91 @@ public class UserStudy : MonoBehaviour {
 	public int userStudyScene;
 	// Use this for initialization
 
-	public bool isGravAR;
 	public Text debugText;
 
 	private Quaternion Q1;
 	private Quaternion Q2;
 
+	private AnnotationScript annoScrip;
+	private annoScript2 annoScrip2;
+
+	public float slidARTotalTime;
+	public float slidARcount;
+	public bool slidAREnable;
+	public bool Helped;
+
+	private int mode;
+	void Awake (){
+		mode = PlayerPrefs.GetInt ("STAGE");
+
+		if (mode == 1|| mode ==4) {
+			GuideLists = list1;
+
+			if (mode == 1)
+				userStudyScene = 0;
+			if (mode == 4)
+				userStudyScene = 2;
+
+		} else if (mode == 2 || mode ==5) {
+			GuideLists = list2;
+			if (mode == 2)
+				userStudyScene = 1;
+			if (mode == 5)
+				userStudyScene = 3;
+		} else {
+			
+		}
+	}
+
 	void Start () {
 		inputCount = 0;
 		childNum = 5;
 		count = 0;
-
-
+		slidARTotalTime = 0;
+		slidARcount = 0;
+		Helped= false;
 		//TargetSetUp();
 	}
 	void Update(){
 		if (timerStart) {
 			timeCount += Time.deltaTime;
 		}
+		if (slidAREnable) {
+			slidARTotalTime += Time.deltaTime;
 
+			if (!Helped) {
+				slidARcount += Time.deltaTime;
+			}
+
+
+			if (slidARcount >= 40) {
+				PositionHelper ();
+				Helped = true;
+				slidARcount = 0;
+			}
+		}
+	}
+	private Vector3 currentGuide;
+
+	public void PositionHelper(){
+		currentGuide = GetCurrentGuide ();
+
+		if (mode == 1 || mode == 2) {
+			annoScrip2 = (annoScript2)selectedGameobject.GetComponent (typeof(annoScript2));
+			selectedGameobject.transform.position = currentGuide;
+			annoScrip2.SetPos (currentGuide);
+
+		} else if (mode == 4 || mode == 5) {
+			annoScrip = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
+			selectedGameobject.transform.position = currentGuide;
+			annoScrip.SetPos (currentGuide);
+		}
+	}
+	public void SetSlidAR(bool AR){
+		slidAREnable = AR;
+		if (AR) {
+			slidARcount = 0;
+		}
 	}
 	public void SetTimer(bool timer){
 		timerStart = timer;
@@ -63,6 +133,8 @@ public class UserStudy : MonoBehaviour {
 	public void TargetSetUp(){
 
 		if (!IsFinish ()) {
+			Helped= false;
+			SetSlidAR (false);
 			GuideLists.transform.GetChild (count).gameObject.SetActive (true);
 			tmp = GuideLists.transform.GetChild (count).gameObject;
 		
@@ -78,10 +150,6 @@ public class UserStudy : MonoBehaviour {
 
 			targetScale = tmp.transform.localScale.x;
 		}
-
-
-
-
 	}
 	public void StartUserStudy(){
 		SetTimer (true);
@@ -102,23 +170,31 @@ public class UserStudy : MonoBehaviour {
 		return false;
 	}
 
+	public Vector3 GetCurrentGuide(){
+		return  GuideLists.transform.GetChild (count).gameObject.transform.position;
+	}
+
 	public void SvaeData(){
 		switch(userStudyScene)
 		{
 		case 0:
 			PlayerPrefs.SetFloat ("TimeApp1_1",timeCount);
+			PlayerPrefs.SetFloat ("TimeSLIDAR1_1",slidARTotalTime);
 			PlayerPrefs.SetInt ("InputApp1_1",inputCount);
 			break;
 		case 1:
 			PlayerPrefs.SetFloat ("TimeApp1_2",timeCount);
+			PlayerPrefs.SetFloat ("TimeSLIDAR1_2",slidARTotalTime);
 			PlayerPrefs.SetInt ("InputApp1_2",inputCount);
 			break;
 		case 2:
 			PlayerPrefs.SetFloat ("TimeApp2_1",timeCount);
+			PlayerPrefs.SetFloat ("TimeSLIDAR2_1",slidARTotalTime);
 			PlayerPrefs.SetInt ("InputApp2_1",inputCount);
 			break;
 		case 3:
 			PlayerPrefs.SetFloat ("TimeApp2_2",timeCount);
+			PlayerPrefs.SetFloat ("TimeSLIDAR2_2",slidARTotalTime);
 			PlayerPrefs.SetInt ("InputApp2_2",inputCount);
 			break;
 		}
@@ -135,7 +211,7 @@ public class UserStudy : MonoBehaviour {
 	private float scale;
 
 	private float angle;
-	private float mAngle = 10f;
+	private float mAngle = 15f;
 	/*
 	 * Check correctness
 	 * too Hard code need to redesign ASAP
@@ -174,33 +250,7 @@ public class UserStudy : MonoBehaviour {
 					Correct ();
 				}
 
-				/*
-				if (isGravAR) {
-
-					if (count == 1 || count ==4) {
-						if(rotY <= targetOren [1] + 5f && rotY >= targetOren [1] - 5f ){
-							Correct ();
-						}
-					} else if (count == 3) {
-						if(rotZ <= targetOren [1] + 5f && rotZ >= targetOren [1] - 5f ){
-							Correct ();
-						}
-					}else {
-						Correct ();
-					}
-
-					
-				} else if(rotX <= targetOren [0] + 5f && rotX >= targetOren [0] - 5f &&
-					rotY <= targetOren [1] + 5f && rotY >= targetOren [1] - 5f &&
-					rotZ <= targetOren [2] + 5f && rotZ >= targetOren [2] - 5f){
-
-					Correct ();
-				}
-*/
-
-			} else {
-				
-			}
+			} 
 
 		} 
 

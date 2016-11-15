@@ -76,6 +76,22 @@ public class EventController : MonoBehaviour {
 	public bool IsUserStudy;
 	public Text debugText;
 
+
+	private bool scaleMode;
+
+	private int mode;
+	public GameObject debugBut;
+	void Awake (){
+		mode = PlayerPrefs.GetInt ("STAGE");
+		if (mode == 3) {
+			IsUserStudy = false;
+		} else if(mode == 4 || mode ==5){
+			IsUserStudy = true;
+			debugBut.SetActive (true);
+		}
+
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -99,7 +115,7 @@ public class EventController : MonoBehaviour {
 	/*
 	float  oldAngle ;
 	float  newAngle ;*/
-	int counts =0;
+
 	// Update is called once per frame
 	void Update () {
 
@@ -132,6 +148,7 @@ public class EventController : MonoBehaviour {
 									}
 
 									selectedGameobject = hit.transform.gameObject;
+									PrepareData ();
 									SelectedAnnotationMat(true);
 
 									break;
@@ -139,6 +156,10 @@ public class EventController : MonoBehaviour {
 
 							}
 						}
+						else if (slidARMode ||rotateMode){
+							USScrip.InputAdd ();
+						}
+
 
 					}
                     if (state.Equals("ADDANNO"))
@@ -146,70 +167,65 @@ public class EventController : MonoBehaviour {
 						
 						GameObject selectPrefab = null;
                         
-                        if (annotationtype > 0 && annotationtype < 10)
-                        {                            
-                            switch (annotationtype)
-                            {
-                                case 1:
-                                    selectPrefab = arrowPrefab[0];
-                                    annoOption = false;
-                                    break;
-                                case 2:
-                                    selectPrefab = arrowPrefab[1];
-                                    annoOption = false;
-                                    break;
-                                case 3:
-                                    selectPrefab = arrowPrefab[1];
-                                    annoOption = true;
-                                    break;
-                            }
+						if (annotationtype > 0 && annotationtype < 10) {                            
+							switch (annotationtype) {
+							case 1:
+								selectPrefab = arrowPrefab [0];
+								annoOption = false;
+								break;
+							case 2:
+								selectPrefab = arrowPrefab [1];
+								annoOption = false;
+								break;
+							case 3:
+								selectPrefab = arrowPrefab [1];
+								annoOption = true;
+								break;
+							}
 
 
-                        }
-                        else if (annotationtype > 10 && annotationtype < 20)
-                        {                            
-                            annoOption = true;
-                            switch (annotationtype)
-                            {
-                                case 11:
-                                    selectPrefab = cArrowPrefab[0];
-                                    break;
-                                case 12:
-                                    selectPrefab = cArrowPrefab[1];
-                                    break;
-                                case 13:
-                                    selectPrefab = cArrowPrefab[2];
-                                    break;
-                                case 14:
-                                    selectPrefab = cArrowPrefab[3];
-                                    break;
-                            }
-                        }
-                        else if (annotationtype > 20)
-                        {
-                            switch (annotationtype)
-                            {
-                                case 21:
-                                    selectPrefab = halfCPrefab[1];
-                                    annoOption = true;
-                                    break;
-                                case 22:
-                                    selectPrefab = halfCPrefab[0];
-                                    annoOption = true;
-                                    break;
-                                case 31:
-                                    selectPrefab = halfCPrefab[1];
-                                    annoOption = false;
-                                    break;
-                                case 32:
-                                    selectPrefab = halfCPrefab[0];
-                                    annoOption = false;
-                                    break;
-                            }
+						} else if (annotationtype > 10 && annotationtype < 20) {                            
+							annoOption = true;
+							switch (annotationtype) {
+							case 11:
+								selectPrefab = cArrowPrefab [0];
+								break;
+							case 12:
+								selectPrefab = cArrowPrefab [1];
+								break;
+							case 13:
+								selectPrefab = cArrowPrefab [2];
+								break;
+							case 14:
+								selectPrefab = cArrowPrefab [3];
+								break;
+							}
+						} else if (annotationtype > 20) {
+							switch (annotationtype) {
+							case 21:
+								selectPrefab = halfCPrefab [1];
+								annoOption = true;
+								break;
+							case 22:
+								selectPrefab = halfCPrefab [0];
+								annoOption = true;
+								break;
+							case 31:
+								selectPrefab = halfCPrefab [1];
+								annoOption = false;
+								break;
+							case 32:
+								selectPrefab = halfCPrefab [0];
+								annoOption = false;
+								break;
+							}
                             
-                        }
+						} else {
+							selectPrefab = null;
+						}
                         if (selectPrefab != null){
 							CreateAnnotation(selectPrefab,rayEnd, annoOption);
+							annotationtype = -1;
 						}
 
 						
@@ -268,7 +284,7 @@ public class EventController : MonoBehaviour {
 									float prevMagnitude = (t1PrevPos - t2PrevPos).magnitude;
 									float cMagnitude = (touch.position - Input.GetTouch(1).position).magnitude;
 
-									float diffMagnitude = (prevMagnitude - cMagnitude)*0.01f;
+									float diffMagnitude = (prevMagnitude - cMagnitude)*0.001f;
 
 									//print (-diffMagnitude);
 									SetObjectScale(-diffMagnitude);
@@ -284,69 +300,13 @@ public class EventController : MonoBehaviour {
 
 		}
 
-
-/*
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0)){
-			
-
-			if(!EventSystem.current.IsPointerOverGameObject ()){  
-
-				ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-				Vector3 rayEnd = ray.GetPoint (4);
-
-				if(state.Equals("NONE")){
-
-					foreach(RaycastHit hit  in Physics.RaycastAll(ray) ) {
-
-						if(hit.collider.tag.Equals ("annotation"))
-						{
-							//print (hit.transform.name);
-							selectedGameobject = hit.transform.gameObject;
-							
-							break;
-						}
-
-					}
-				}
-                
-			}
-
-		}
-		if (!EventSystem.current.IsPointerOverGameObject ()) {  
-			if (Input.GetMouseButton (0)) {
-			
-				if (state.Equals ("EDIT")) {
-					if (selectedGameobject != null) {
-
-						if(slidARMode)
-						{
-							MoveSlidAR (Input.mousePosition);
-						}
-						if(rotateMode)
-						{
-
-						}
-
-					}				
-				}
-			}
-		}
-		
-#endif
-*/
 		if (state.Equals ("EDIT")) {
 
 			if (selectedGameobject != null) {
                 //PrepareData();
                 if (slidARMode)
                 {
-					counts++;
-					//if (counts == 5) {
-						DrawSlidAR();
-					//	counts = 0;
-					//}
-
+					DrawSlidAR();
                 }
 			}
 		} 
@@ -377,6 +337,7 @@ public class EventController : MonoBehaviour {
     {
         UIs.OnSlidARTouch();
         slidARMode = true;
+		USScrip.SetSlidAR (true);
         rotateMode = false;
     }
     public void RotateActive()
@@ -384,6 +345,7 @@ public class EventController : MonoBehaviour {
 		destroyLine ();
         UIs.OnRotateTouch();
         slidARMode = false;
+		USScrip.SetSlidAR (false);
         rotateMode = true;
     }
     public void OpenAddPanel()
@@ -403,6 +365,7 @@ public class EventController : MonoBehaviour {
         UIs.OnEditDone();
         UIs.OnAddAnnoDone();        
         slidARMode = false;
+		USScrip.SetSlidAR (false);
         rotateMode = false;
         destroyLine ();
         state = "NONE";
@@ -416,24 +379,15 @@ public class EventController : MonoBehaviour {
     {
         annotationtype = type;
     }
-	/*
-    public void ChangeAnnoOption()
-    {
-        if (annoOption)
-        {
-            annoOption = false;
-			modeText.text = "Vertical";
-        }
-        else
-        {
-            annoOption = true;
-			modeText.text = "Parallel";
-        }
-    }
-	*/
+	private AnnotationScript tmp ;
+
+	public void PrepareData(){
+		tmp = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
+
+	}
     private void SelectedAnnotationMat(bool seleted)
     {
-        AnnotationScript tmp = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
+        //tmp = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
         if (seleted)
         {
             tmp.SelectedAnnotation();
@@ -447,15 +401,15 @@ public class EventController : MonoBehaviour {
     public void SetObjectOrientation(float input,string axis)
 	{
 		if (selectedGameobject != null) {
-			annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
-			annoScrip.SetOrientation(input,axis);
+			//annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
+			tmp.SetOrientation(input,axis);
 		}
 	}    
 	public void SetObjectScale(float mag)
 	{
 		if (selectedGameobject != null) {
-			annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
-			annoScrip.SetObjectScale(new Vector3(mag,mag,mag));
+			//annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
+			tmp.SetObjectScale(new Vector3(mag,mag,mag));
 		}
 	}
 
@@ -468,23 +422,12 @@ public class EventController : MonoBehaviour {
 		annoScrip.InitCamaraPosition (Camera.main.transform.position);
         annoScrip.SetAnnoType(annotationtype);
     }
-	/*
-	private void CreateCircle(Vector3 objePos,bool paraOption){
-		GameObject newAnnotation = Instantiate (circlePrefab,objePos,transform.rotation) as GameObject;
-		newAnnotation.transform.parent = marker.transform;
-		annoScrip = (AnnotationScript)newAnnotation.GetComponent (typeof(AnnotationScript));
-		annoScrip.SetState (paraOption);
-		annoScrip.InitCamaraPosition (Camera.main.transform.position);
-		//TmpCircleGameobject = newAnnotation;
-	}	*/
-
-
 
 	public void PrepareSlidARData(){
 		print ("prepare");
-		annoScrip = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
-		tmpCamPos = annoScrip.GetInitCamPos ();
-		tmpAnnoPos = annoScrip.GetAnnoPos ();
+		tmp = (AnnotationScript)selectedGameobject.GetComponent (typeof(AnnotationScript));
+		tmpCamPos = tmp.GetInitCamPos ();
+		tmpAnnoPos = tmp.GetAnnoPos ();
 
 	}
 
@@ -568,8 +511,7 @@ public class EventController : MonoBehaviour {
 		Vector2 camOnScr = new Vector2 (tmpcam2.x,tmpcam2.y); 
 		Vector2 annoOnScr = new Vector2 (tmpAnno2.x,tmpAnno2.y); 
 		Vector2 vCamToAnno = annoOnScr - camOnScr;
-
-		//print (camOnScr + " : " + annoOnScr);
+		//print (camOnScr +": "+annoOnScr);
 		if(camOnScr.x >=0 || camOnScr.x < scWidth)
 		{
 			if(camOnScr.y >=0 || camOnScr.y < scHeight)
@@ -593,20 +535,20 @@ public class EventController : MonoBehaviour {
 
 		if(!isCamOnSc)
 		{
-			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,0.5f)));
-			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,0.5f)));
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1f)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1f)));
 		}
 		else
 		{
 			Vector2 fpoint = camOnScr - (2*vCamToAnno);
-			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,0.5f)));
-			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,0.5f)));
-			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,0.5f)));
+			lr.SetPosition (0, Camera.main.ScreenToWorldPoint(new Vector3(fpoint.x,fpoint.y,1f)));
+			lr.SetPosition (1, Camera.main.ScreenToWorldPoint(new Vector3(camOnScr.x,camOnScr.y,1f)));
+			lr.SetPosition (2, Camera.main.ScreenToWorldPoint(new Vector3(annoOnScr.x,annoOnScr.y,1f)));
 		}
 		if(isAnnoOnSc)
 		{
 			Vector2 lpoint = camOnScr + (2*vCamToAnno);
-			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,0.5f)));
+			lr.SetPosition (count-1, Camera.main.ScreenToWorldPoint(new Vector3(lpoint.x,lpoint.y,1f)));
 		}
 
 	}
