@@ -209,7 +209,6 @@ MonoBehaviour:
   mat1: {fileID: 2100000, guid: b236f0ceb2df843608d602c15fc97ae4, type: 2}
   mat2: {fileID: 2100000, guid: bb8c18dea4dc14a6a82c0b76db060575, type: 2}
   Axis: {fileID: 0}
-  haveAxis: 0
 --- !u!135 &13581080
 SphereCollider:
   m_ObjectHideFlags: 1

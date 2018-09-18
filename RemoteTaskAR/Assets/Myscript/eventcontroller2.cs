@@ -99,7 +99,7 @@ public class eventcontroller2 : MonoBehaviour {
 							}
 						}
 						if (slidARMode || scaleMode) {
-							USScrip.InputAdd ();
+							
 						}
 
 					}
@@ -372,9 +372,9 @@ public class eventcontroller2 : MonoBehaviour {
 		}
 		if (bo) {
 			PrepareSlidARData ();
-			USScrip.SetSlidAR (true);
+			//USScrip.SetSlidAR (true);
 		} else {
-			USScrip.SetSlidAR (false);
+			//USScrip.SetSlidAR (false);
 			destroyLine ();
 		}
 		slidARMode = bo;

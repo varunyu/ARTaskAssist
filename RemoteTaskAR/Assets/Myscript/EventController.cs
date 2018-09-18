@@ -104,6 +104,7 @@ public class EventController : MonoBehaviour {
         rotateMode = false;
 		state = "NONE";
         annoOption = false;
+
 		lr = gameObject.AddComponent<LineRenderer>();
 		lr.enabled = false;
 
@@ -157,7 +158,7 @@ public class EventController : MonoBehaviour {
 							}
 						}
 						else if (slidARMode ||rotateMode){
-							USScrip.InputAdd ();
+							
 						}
 
 
@@ -266,28 +267,55 @@ public class EventController : MonoBehaviour {
 								if(Input.touchCount == 1)
 								{
 									//print (touch.deltaPosition);
+									/*
+									if(Mathf.Abs (touch.deltaPosition.x) >= 3f){
+										SetObjectOrientation(touch.deltaPosition.x*rotaSpeed*Time.deltaTime,"X");
+									}
+
+									if(Mathf.Abs (touch.deltaPosition.y) >= 3f){
+										//SetObjectOrientation(touch.deltaPosition.x*rotaSpeed*Time.deltaTime,"Y");
+										selectedGameobject.transform.RotateAround(selectedGameobject.transform.position,Camera.main.transform.right,
+											touch.deltaPosition.y*rotaSpeed*Time.deltaTime);
+									}
+									*/
+
+
 									if(Mathf.Abs(touch.deltaPosition.x) > Mathf.Abs(touch.deltaPosition.y))
 									{
-
-										SetObjectOrientation(touch.deltaPosition.x*rotaSpeed*Time.deltaTime,"Y");
+										SetObjectOrientation(touch.deltaPosition.x*rotaSpeed*Time.deltaTime,"X");
 									}
 									else
 									{
-										//SetObjectOrientation(touch.deltaPosition.y*rotaSpeed*Time.deltaTime,"X");
+										/*
+										selectedGameobject.transform.RotateAround(selectedGameobject.transform.position,Camera.main.transform.right,
+											touch.deltaPosition.y*rotaSpeed*Time.deltaTime);
+											*/
 									}
 								}
 								else if(Input.touchCount >=2)
 								{
+									
 									Vector2 t1PrevPos = touch.position - touch.deltaPosition;
 									Vector2 t2PrevPos = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
 
 									float prevMagnitude = (t1PrevPos - t2PrevPos).magnitude;
 									float cMagnitude = (touch.position - Input.GetTouch(1).position).magnitude;
-
+									/*
 									float diffMagnitude = (prevMagnitude - cMagnitude)*0.001f;
 
 									//print (-diffMagnitude);
 									SetObjectScale(-diffMagnitude);
+									*/
+									Vector2 prevDir = t2PrevPos - t1PrevPos;
+									Vector2 currentDir = Input.GetTouch (1).position - touch.position;
+									float angle = Vector2.Angle (prevDir, currentDir);
+									Vector3 LR = Vector3.Cross (prevDir,currentDir);
+
+									if (LR.z > 0) {
+										SetObjectOrientation(angle,"Z");
+									} else {
+										SetObjectOrientation(-angle,"Z");
+									}
 								}
 							}
 							
@@ -337,7 +365,7 @@ public class EventController : MonoBehaviour {
     {
         UIs.OnSlidARTouch();
         slidARMode = true;
-		USScrip.SetSlidAR (true);
+		//USScrip.SetSlidAR (true);
         rotateMode = false;
     }
     public void RotateActive()
@@ -345,7 +373,7 @@ public class EventController : MonoBehaviour {
 		destroyLine ();
         UIs.OnRotateTouch();
         slidARMode = false;
-		USScrip.SetSlidAR (false);
+		//USScrip.SetSlidAR (false);
         rotateMode = true;
     }
     public void OpenAddPanel()
@@ -365,7 +393,7 @@ public class EventController : MonoBehaviour {
         UIs.OnEditDone();
         UIs.OnAddAnnoDone();        
         slidARMode = false;
-		USScrip.SetSlidAR (false);
+		//USScrip.SetSlidAR (false);
         rotateMode = false;
         destroyLine ();
         state = "NONE";

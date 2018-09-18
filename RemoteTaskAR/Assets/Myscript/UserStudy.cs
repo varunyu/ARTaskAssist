@@ -6,7 +6,7 @@ public class UserStudy : MonoBehaviour {
 
 	public float[] targetPos = new float[3];
 	public float[] targetOren = new float[3];
-	public float targetScale= 0f;
+
 	public GameObject selectedGameobject;
 	private GameObject tmp;
 
@@ -21,120 +21,178 @@ public class UserStudy : MonoBehaviour {
 	private bool timerStart;
 	private float timeCount;
 
-	private int inputCount;
-	// 0 = app1_1
-	// 1 = app1_2
-	// 2 = app2_1
-	// 3 = app2_2
-	public int userStudyScene;
-	// Use this for initialization
-
 	public Text debugText;
 
 	private Quaternion Q1;
 	private Quaternion Q2;
 
-	private AnnotationScript annoScrip;
-	private annoScript2 annoScrip2;
 
-	public float slidARTotalTime;
-	public float slidARcount;
-	public bool slidAREnable;
-	public bool Helped;
+	private AnnotationControl AC;
 
-	private int mode;
+	private char[] stageList;
+	public GameObject WorldCoordiList;
+	private GameObject cWorldCoordi;
+
+	public int cStage;
+
+	public Scrollbar progressBar;
+	public GameObject[] correctCheck;
+
+	private Vector3 lastCamPos;
+	private float deviceMovement;
+	private float rotateTimer;
+	private bool rotateMode;
+
 	void Awake (){
-		mode = PlayerPrefs.GetInt ("STAGE");
+		AC = (AnnotationControl)gameObject.GetComponent(typeof(AnnotationControl));
 
-		if (mode == 1|| mode ==4) {
-			GuideLists = list1;
+		string input = "12345678";
 
-			if (mode == 1)
-				userStudyScene = 0;
-			if (mode == 4)
-				userStudyScene = 2;
-
-		} else if (mode == 2 || mode ==5) {
-			GuideLists = list2;
-			if (mode == 2)
-				userStudyScene = 1;
-			if (mode == 5)
-				userStudyScene = 3;
-		} else {
-			
+		if (PlayerPrefs.HasKey ("UserStudyOrder")) {
+			input = PlayerPrefs.GetString ("UserStudyOrder");
 		}
+		cStage = 1;
+
+		stageList = input.ToCharArray ();
+
 	}
 
 	void Start () {
-		inputCount = 0;
 		childNum = 5;
 		count = 0;
-		slidARTotalTime = 0;
-		slidARcount = 0;
-		Helped= false;
-		//TargetSetUp();
+
+		StageSetup ();
+		TargetSetUp();
+		ShowProgress ();
+
+
+		deviceMovement = 0;
+		lastCamPos = Camera.main.transform.position;
+		timerStart = true;
 	}
+
+	private float totalDistace;
+
 	void Update(){
 		if (timerStart) {
 			timeCount += Time.deltaTime;
-		}
-		if (slidAREnable) {
-			slidARTotalTime += Time.deltaTime;
+			/*
+			print("Dis "+Vector3.Distance (Camera.main.transform.position,lastCamPos)
+				* Time.deltaTime);*/
 
-			if (!Helped) {
-				slidARcount += Time.deltaTime;
+			if (rotateMode) {
+				rotateTimer += Time.deltaTime;
 			}
 
+			totalDistace = Vector3.Distance (Camera.main.transform.position, lastCamPos)
+			* Time.deltaTime;
 
-			if (slidARcount >= 40) {
-				PositionHelper ();
-				Helped = true;
-				slidARcount = 0;
+			if( totalDistace >=0.06f ){
+				deviceMovement += totalDistace;
 			}
+			lastCamPos = Camera.main.transform.position;
+		}
+
+	}
+	private void ResetTimer(){
+		timeCount = 0;
+		deviceMovement = 0f;
+		rotateTimer = 0;
+		if (rotateMode) {
+			rotateMode = false;
 		}
 	}
-	private Vector3 currentGuide;
+	public void SetRotateMode(bool t){
+		
+		rotateMode = t;
+	}
+	private string savePrefsName;
 
-	public void PositionHelper(){
-		currentGuide = GetCurrentGuide ();
-
-		if (mode == 1 || mode == 2) {
-			annoScrip2 = (annoScript2)selectedGameobject.GetComponent (typeof(annoScript2));
-			selectedGameobject.transform.position = currentGuide;
-			annoScrip2.SetPos (currentGuide);
-
-		} else if (mode == 4 || mode == 5) {
-			annoScrip = (AnnotationScript)selectedGameobject.GetComponent(typeof(AnnotationScript));
-			selectedGameobject.transform.position = currentGuide;
-			annoScrip.SetPos (currentGuide);
+	private void StageSetup(){
+		if (cWorldCoordi != null) {
+			cWorldCoordi.SetActive (false);
 		}
-	}
-	public void SetSlidAR(bool AR){
-		slidAREnable = AR;
-		if (AR) {
-			slidARcount = 0;
+
+		switch (stageList [cStage - 1]) {
+		case '1':
+			// setup world coordinate
+			// setup method
+			AC.SetGravityMode (true);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (0).gameObject;
+			GuideLists = list1;
+			savePrefsName = "Time000";
+			break;
+		case '2':
+			AC.SetGravityMode(true);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (1).gameObject;
+			GuideLists = list1;
+			savePrefsName = "Time001";
+			break;
+		case '3':
+			AC.SetGravityMode(true);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (0).gameObject;
+			GuideLists = list2;
+			savePrefsName = "Time010";
+			break;
+		case '4':
+			AC.SetGravityMode(true);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (1).gameObject;
+			GuideLists = list2;
+			savePrefsName = "Time011";
+			break;	
+		case '5':
+			AC.SetGravityMode(false);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (0).gameObject;
+			GuideLists = list1;
+			savePrefsName = "Time100";
+			break;
+		case '6':
+			AC.SetGravityMode(false);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (1).gameObject;
+			GuideLists = list1;
+			savePrefsName = "Time101";
+			break;
+		case '7':
+			AC.SetGravityMode(false);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (0).gameObject;
+			GuideLists = list2;
+			savePrefsName = "Time110";
+			break;
+		case '8':
+			AC.SetGravityMode(false);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (1).gameObject;
+			GuideLists = list2;
+			savePrefsName = "Time111";
+			break;
+		case '0':
+			AC.SetGravityMode (true);
+			cWorldCoordi = WorldCoordiList.transform.GetChild (1).gameObject;
+			break;
+		
 		}
+		progressBar.size = (cStage) * 0.125f;
+		//cWorldCoordi.SetActive (true);
+
+		AC.SetWorldCoor (cWorldCoordi.transform.eulerAngles);
+
 	}
-	public void SetTimer(bool timer){
-		timerStart = timer;
+
+	private void SaveTimeRecord(){
+		print ("Save: " + savePrefsName);
+		deviceMovement *= 10;
+		PlayerPrefs.SetString (savePrefsName,timeCount.ToString());
+		PlayerPrefs.SetString (savePrefsName+"R",rotateTimer.ToString());
+		PlayerPrefs.SetString (savePrefsName+"D",deviceMovement.ToString());
+		ResetTimer ();
 	}
+
 	public float GetTime(){
 		return timeCount;
 	}
-	public void InputAdd(){
-		if (!IsFinish()) {
-			inputCount++;
-		}
-	}
-	public int InputCount(){
-		return inputCount;
-	}
-
 	public void TargetSetUp(){
 
 		if (!IsFinish ()) {
-			Helped= false;
-			SetSlidAR (false);
+			
 			GuideLists.transform.GetChild (count).gameObject.SetActive (true);
 			tmp = GuideLists.transform.GetChild (count).gameObject;
 		
@@ -148,73 +206,67 @@ public class UserStudy : MonoBehaviour {
 
 			Q1 = tmp.transform.rotation;
 
-			targetScale = tmp.transform.localScale.x;
+
 		}
 	}
 	public void StartUserStudy(){
-		SetTimer (true);
+		
 		ShowProgress ();
 		TargetSetUp ();
 	}
 	private void ShowProgress(){
 		debugText.text = count + " / " + childNum;
+
+
+
+
 	}
+
 	public bool IsFinish(){
 		
-		if (count == childNum) {
-			SetTimer (false);
-			SvaeData ();
-			print ("Finish");
+
+		if (cStage == 8 && count >= 5) {
+
+			print ("finish");
+			//print ("complete :" + cStage);
+			if (timerStart) {
+				SaveTimeRecord ();
+			}
+
+			timerStart = false;
+			debugText.text = " Finish ";
+			savePrefsName = "Done";
 			return true;
-		}
-		return false;
+		} else
+			if (count == 5) {
+				count = 0;
+				//print ("complete :" + cStage);
+				SaveTimeRecord ();
+				cStage++;
+				StageSetup ();
+			}
+			return false;
 	}
 
 	public Vector3 GetCurrentGuide(){
 		return  GuideLists.transform.GetChild (count).gameObject.transform.position;
 	}
 
-	public void SvaeData(){
-		switch(userStudyScene)
-		{
-		case 0:
-			PlayerPrefs.SetFloat ("TimeApp1_1",timeCount);
-			PlayerPrefs.SetFloat ("TimeSLIDAR1_1",slidARTotalTime);
-			PlayerPrefs.SetInt ("InputApp1_1",inputCount);
-			break;
-		case 1:
-			PlayerPrefs.SetFloat ("TimeApp1_2",timeCount);
-			PlayerPrefs.SetFloat ("TimeSLIDAR1_2",slidARTotalTime);
-			PlayerPrefs.SetInt ("InputApp1_2",inputCount);
-			break;
-		case 2:
-			PlayerPrefs.SetFloat ("TimeApp2_1",timeCount);
-			PlayerPrefs.SetFloat ("TimeSLIDAR2_1",slidARTotalTime);
-			PlayerPrefs.SetInt ("InputApp2_1",inputCount);
-			break;
-		case 3:
-			PlayerPrefs.SetFloat ("TimeApp2_2",timeCount);
-			PlayerPrefs.SetFloat ("TimeSLIDAR2_2",slidARTotalTime);
-			PlayerPrefs.SetInt ("InputApp2_2",inputCount);
-			break;
-		}
+	public void SaveData(){
+		
 	}
 
 	private float posX ;
 	private float posY ;
 	private float posZ ;
-	/*
-	private float rotX ;
-	private float rotY ;
-	private float rotZ ;
-*/
+
 	private float scale;
 
 	private float angle;
-	private float mAngle = 15f;
+	private float mAngle = 20f;
 	/*
 	 * Check correctness
-	 * too Hard code need to redesign ASAP
+	 * Hard code need to redesign ASAP
 	 * */
 	public void CheckCorrectness(GameObject obj){
 		
@@ -225,32 +277,30 @@ public class UserStudy : MonoBehaviour {
 			posX = selectedGameobject.transform.position.x;
 			posY = selectedGameobject.transform.position.y;
 			posZ = selectedGameobject.transform.position.z;
-			/*
-			rotX = selectedGameobject.transform.eulerAngles.x;
-			rotY = selectedGameobject.transform.eulerAngles.y;
-			rotZ = selectedGameobject.transform.eulerAngles.z;
-*/
+
 			Q2 = selectedGameobject.transform.rotation;
 				
 			scale = selectedGameobject.transform.localScale.x;
-			//print (posX + posY + posZ);
-			/*
-			print(posX+ " "+posY+ " "+posZ);
-			print (rotX + " " + rotY + " " + rotZ);
-			print (scale);
-*/
-			if (posX <= targetPos [0] + 0.8f && posX >= targetPos [0] - 0.8f &&
-			    posY <= targetPos [1] + 0.8f && posY >= targetPos [1] - 0.8f &&
-			    posZ <= targetPos [2] + 0.8f && posZ >= targetPos [2] - 0.8f &&			    
-			    scale <= targetScale + 0.07f && scale >= targetScale - 0.07f) {
+			angle = Quaternion.Angle (Q1,Q2);
 
-				angle = Quaternion.Angle (Q1,Q2);
+			if (posX <= targetPos [0] + 1f && posX >= targetPos [0] - 1f &&
+			    posY <= targetPos [1] + 1f && posY >= targetPos [1] - 1f &&
+			    posZ <= targetPos [2] + 1f && posZ >= targetPos [2] - 1f) {
+
+				CorrectImageColor (0, 1);
+
 
 				if (angle <= mAngle) {
+					CorrectImageColor (1, 1);
 					Correct ();
 				}
 
-			} 
+			} else if (angle <= mAngle) {
+				CorrectImageColor (1, 1);
+			} else {
+				CorrectImageColor (0, 0);
+				CorrectImageColor (1, 0);
+			}
 
 		} 
 
@@ -261,8 +311,17 @@ public class UserStudy : MonoBehaviour {
 		if (!IsFinish()) {
 			GuideLists.transform.GetChild (count).gameObject.SetActive (false);
 			count++;
+
 			ShowProgress ();
 			TargetSetUp ();
+		}
+	}
+
+	public void CorrectImageColor(int index,int color){
+		if (color == 0) {
+			correctCheck [index].GetComponent<Image> ().color = Color.gray;
+		} else if (color == 1) {
+			correctCheck [index].GetComponent<Image> ().color = Color.blue;
 		}
 	}
 

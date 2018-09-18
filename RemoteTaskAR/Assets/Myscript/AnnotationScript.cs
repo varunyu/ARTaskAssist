@@ -31,9 +31,7 @@ public class AnnotationScript : MonoBehaviour {
 		SetRotation ();
 	}
 
-	public void SetRotation(){
-		
-
+	private Vector3 GetGravityVector(){
 		Vector3 camAngle = Camera.main.transform.eulerAngles;
 
 		Quaternion rotation = Quaternion.Euler (camAngle);
@@ -41,7 +39,13 @@ public class AnnotationScript : MonoBehaviour {
 
 
 		Vector3 rotaGrav = rotation * grav;
-		//float toNorth = Input.compass.magneticHeading;
+		return rotaGrav;
+	}
+	public void SetRotation(){
+		
+
+		Vector3 rotaGrav = GetGravityVector ();
+
 	
 		if (rotaGrav.y < -0 ) {
 
@@ -61,7 +65,13 @@ public class AnnotationScript : MonoBehaviour {
 		}
 
 	}
-	
+
+	public void Rotate90(bool t){
+		if (t) {
+			gameObject.transform.Rotate (new Vector3 (90, 0, 0));
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -88,6 +98,7 @@ public class AnnotationScript : MonoBehaviour {
 	}
 
 	public void SetOrientation(float deg,string Axis){
+		/*
 		if (parallel) {
 			if(Axis.Equals("X"))
 			{
@@ -119,6 +130,24 @@ public class AnnotationScript : MonoBehaviour {
 			}
 
 		}
+		*/
+		Vector3 tmp = GetGravityVector ();
+		switch (Axis) {
+
+		case "X":
+			gameObject.transform.RotateAround (gameObject.transform.position,tmp,deg);
+			break;
+		/*
+		case "Y":
+			gameObject.transform.RotateAround(gameObject.transform.position,Camera.main.transform.right,
+				deg);
+			break;*/
+		case "Z":
+			gameObject.transform.RotateAround(gameObject.transform.position,Camera.main.transform.forward,
+				deg);
+			break;
+		}			
+
 	}
 	public void SetObjectScale(Vector3 scale)
 	{

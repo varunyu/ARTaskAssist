@@ -84,7 +84,9 @@ namespace Vuforia
             {
                 component.enabled = true;
             }
-            MarkerPannel.SetActive(false);
+			if (MarkerPannel != null) {
+				MarkerPannel.SetActive (false);
+			}
             Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         }
 
